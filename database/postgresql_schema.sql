@@ -105,7 +105,12 @@ CREATE TABLE IF NOT EXISTS lotes (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE (item_id, codigo_lote),
-    CHECK (quantidade_disponivel >= 0)
+    CHECK (quantidade_disponivel >= 0),
+    CHECK (
+        data_fabricacao IS NULL
+        OR data_validade IS NULL
+        OR data_validade >= data_fabricacao
+    )
 );
 
 CREATE TABLE IF NOT EXISTS requisicoes (
@@ -225,7 +230,17 @@ CREATE TABLE IF NOT EXISTS movimentacoes (
     observacao TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CHECK (tipo_movimentacao IN ('entrada', 'saida', 'transferencia', 'ajuste', 'baixa', 'inventario')),
-    CHECK (quantidade > 0)
+    CHECK (quantidade > 0),
+    CHECK (
+        (
+            tipo_movimentacao = 'transferencia'
+            AND localizacao_origem_id IS NOT NULL
+            AND localizacao_destino_id IS NOT NULL
+        )
+        OR (tipo_movimentacao = 'entrada' AND localizacao_destino_id IS NOT NULL)
+        OR (tipo_movimentacao = 'saida' AND localizacao_origem_id IS NOT NULL)
+        OR (tipo_movimentacao IN ('ajuste', 'baixa', 'inventario'))
+    )
 );
 
 CREATE TABLE IF NOT EXISTS auditorias (
