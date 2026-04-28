@@ -1,37 +1,34 @@
 # lab-management
 
-Sistema para controle de estoque e manutenção de equipamentos de laboratório (backend Django).
+Sistema para controle de estoque e manutencao de equipamentos de laboratorio (backend Django).
 
-**O que já existe neste repositório:**
+**O que ja existe neste repositorio:**
 
 - **Modelo relacional (DDL):** [database/postgresql_schema.sql](database/postgresql_schema.sql)
-- **Documentação da modelagem:** [docs/modelagem-postgresql.md](docs/modelagem-postgresql.md)
-- **Regra de prática TDD:** [.agents/skills/always-tdd/SKILL.md](.agents/skills/always-tdd/SKILL.md)
+- **Documentacao da modelagem:** [docs/modelagem-postgresql.md](docs/modelagem-postgresql.md)
 
-**Resumo rápido:** o schema PostgreSQL foi modelado e incluído em `database/postgresql_schema.sql`. Ele pode ser aplicado manualmente em um servidor PostgreSQL local antes de executar as migrações Django.
-
-**Pré-requisitos**
+## Requisitos
 
 - Python 3.14
-- PostgreSQL (compatível com a versão instalada localmente)
-- `uv` (gerenciador de dependências e runner usado no projeto)
+- PostgreSQL (compatível com a versao instalada localmente)
+- `uv` (gerenciador de dependencias e runner usado no projeto)
 
-**Setup local (passo a passo mínimo)**
+## Setup local
 
-1. Clonar o repositório
+1. Clonar o repositorio
 
 ```bash
 git clone <repo-url>
 cd lab-management
 ```
 
-2. Instalar dependências
+2. Instalar dependencias
 
 ```bash
 uv sync
 ```
 
-3. Criar o arquivo `.env` com as variáveis necessárias (exemplo):
+3. Criar o arquivo `.env` com as variaveis necessarias (exemplo):
 
 ```env
 SECRET_KEY=troque_por_uma_chave_secreta
@@ -39,39 +36,37 @@ DEBUG=True
 DATABASE_URL=postgres://postgres:senha@localhost:5432/lab_management
 ```
 
-Observação: se seu banco tem outro nome (por exemplo `lab-management` com hífen), ajuste `DATABASE_URL` conforme necessário.
+Observacao: se seu banco tem outro nome (por exemplo `lab-management` com hifen), ajuste `DATABASE_URL` conforme necessario.
 
-4. (Opcional) Aplicar o schema SQL direto no banco — útil para provisionar todas as tabelas e índices descritos na modelagem:
+4. Escolha uma das estrategias de banco abaixo.
 
-```bash
-psql "postgres://<usuario>:<senha>@<host>:<porta>/<dbname>" -f database/postgresql_schema.sql
-```
+### Estrategia A (Django gerencia o schema)
 
-5. Executar as migrações Django (garante migrações das apps e do Django):
+Use apenas migracoes Django para criar as tabelas.
 
 ```bash
 uv run python manage.py migrate
 ```
 
-6. Criar superusuário e rodar o servidor de desenvolvimento:
+### Estrategia B (DDL aplicado manualmente)
+
+Se voce aplicar o DDL manualmente, deixe essas tabelas fora do controle do Django (use `managed = False` nos modelos correspondentes) ou use um baseline com `--fake-initial` quando aplicavel.
+
+```bash
+psql "postgres://<usuario>:<senha>@<host>:<porta>/<dbname>" -f database/postgresql_schema.sql
+```
+
+5. Criar superusuario e rodar o servidor de desenvolvimento:
 
 ```bash
 uv run python manage.py createsuperuser
 uv run python manage.py runserver
 ```
 
-**Arquivos importantes**
+## Dependencias
 
-- **DDL do banco:** [database/postgresql_schema.sql](database/postgresql_schema.sql)
-- **Modelagem e documentação:** [docs/modelagem-postgresql.md](docs/modelagem-postgresql.md)
-- **Política TDD (skill):** [.agents/skills/always-tdd/SKILL.md](.agents/skills/always-tdd/SKILL.md)
+Este projeto usa `uv` para gerenciar dependencias. Sempre use `uv add` ao instalar novos pacotes:
 
-Se quiser, eu posso também:
-
-- Gerar um arquivo `.env.example` com os valores de template
-- Dividir as alterações recentes em commits atômicos com mensagens em Português (prévia das mensagens antes de aplicar)
-
-Quer que eu já gere o `.env.example` e prepare os commits atômicos agora?
-
---
-Atualizado em 28 de abril de 2026
+```bash
+uv add <package-name>
+```
