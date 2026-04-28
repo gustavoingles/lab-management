@@ -1,81 +1,77 @@
 # lab-management
 
-A web application for managing laboratory resources, built with Django and managed with uv.
+Sistema para controle de estoque e manutenção de equipamentos de laboratório (backend Django).
 
-## Tech Stack
+**O que já existe neste repositório:**
 
-- **Python** 3.14
-- **Django** 6.0.4
-- **django-environ** — environment variable management via `.env`
-- **psycopg** 3 — PostgreSQL adapter
-- **uv** — project and dependency management
+- **Modelo relacional (DDL):** [database/postgresql_schema.sql](database/postgresql_schema.sql)
+- **Documentação da modelagem:** [docs/modelagem-postgresql.md](docs/modelagem-postgresql.md)
+- **Regra de prática TDD:** [.agents/skills/always-tdd/SKILL.md](.agents/skills/always-tdd/SKILL.md)
 
-## Project Structure
+**Resumo rápido:** o schema PostgreSQL foi modelado e incluído em `database/postgresql_schema.sql`. Ele pode ser aplicado manualmente em um servidor PostgreSQL local antes de executar as migrações Django.
 
-```
-lab-management/
-├── lab_management/       # Django project configuration
-│   ├── settings.py
-│   ├── urls.py
-│   ├── asgi.py
-│   └── wsgi.py
-├── manage.py
-├── pyproject.toml        # Project metadata and dependencies
-├── uv.lock               # Locked dependency versions
-└── .env                  # Environment variables (not committed)
-```
+**Pré-requisitos**
 
-## Setup
+- Python 3.14
+- PostgreSQL (compatível com a versão instalada localmente)
+- `uv` (gerenciador de dependências e runner usado no projeto)
 
-### 1. Clone the repository
+**Setup local (passo a passo mínimo)**
+
+1. Clonar o repositório
 
 ```bash
 git clone <repo-url>
 cd lab-management
 ```
 
-### 2. Install dependencies
+2. Instalar dependências
 
 ```bash
 uv sync
 ```
 
-### 3. Configure environment variables
-
-Copy the example below into a `.env` file at the project root (next to `manage.py`):
+3. Criar o arquivo `.env` com as variáveis necessárias (exemplo):
 
 ```env
-SECRET_KEY=your-secret-key-here
+SECRET_KEY=troque_por_uma_chave_secreta
 DEBUG=True
-DATABASE_URL=postgres://user:password@localhost:5432/lab_management
+DATABASE_URL=postgres://postgres:senha@localhost:5432/lab_management
 ```
 
-### 4. Apply migrations
+Observação: se seu banco tem outro nome (por exemplo `lab-management` com hífen), ajuste `DATABASE_URL` conforme necessário.
+
+4. (Opcional) Aplicar o schema SQL direto no banco — útil para provisionar todas as tabelas e índices descritos na modelagem:
+
+```bash
+psql "postgres://<usuario>:<senha>@<host>:<porta>/<dbname>" -f database/postgresql_schema.sql
+```
+
+5. Executar as migrações Django (garante migrações das apps e do Django):
 
 ```bash
 uv run python manage.py migrate
 ```
 
-### 5. Create a superuser
+6. Criar superusuário e rodar o servidor de desenvolvimento:
 
 ```bash
 uv run python manage.py createsuperuser
-```
-
-### 6. Run the development server
-
-```bash
 uv run python manage.py runserver
 ```
 
-The app will be available at `http://127.0.0.1:8000/`. The admin interface is at `/admin/`.
+**Arquivos importantes**
 
-## Adding Dependencies
+- **DDL do banco:** [database/postgresql_schema.sql](database/postgresql_schema.sql)
+- **Modelagem e documentação:** [docs/modelagem-postgresql.md](docs/modelagem-postgresql.md)
+- **Política TDD (skill):** [.agents/skills/always-tdd/SKILL.md](.agents/skills/always-tdd/SKILL.md)
 
-This project uses `uv` for dependency management. Always use `uv add` to install new packages:
+Se quiser, eu posso também:
 
-```bash
-uv add <package-name>
-```
+- Gerar um arquivo `.env.example` com os valores de template
+- Dividir as alterações recentes em commits atômicos com mensagens em Português (prévia das mensagens antes de aplicar)
 
-This keeps `pyproject.toml` and `uv.lock` in sync automatically.
+Quer que eu já gere o `.env.example` e prepare os commits atômicos agora?
+
+--
+Atualizado em 28 de abril de 2026
