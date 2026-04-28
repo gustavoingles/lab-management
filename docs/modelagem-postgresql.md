@@ -109,7 +109,7 @@ O foco é refletir os requisitos já narrados no documento do projeto: cadastro,
 - `codigo_lote`
 - `fabricante`
 - `data_fabricacao`
-- `validade`
+- `data_validade`
 - `quantidade_disponivel`
 - `created_at`
 - `updated_at`
@@ -137,7 +137,7 @@ O foco é refletir os requisitos já narrados no documento do projeto: cadastro,
 - `finalidade`
 - `justificativa`
 - `prioridade`
-- `created_at`
+- `data_solicitacao`
 - `data_aprovacao`
 - `data_atendimento`
 - `observacao`
@@ -241,7 +241,7 @@ O foco é refletir os requisitos já narrados no documento do projeto: cadastro,
 
 ## Regras de modelagem recomendadas
 
-- Usar `CHECK` para campos enumerados como `perfil`, `tipo_item`, `tipo_movimentacao`, `status`, `prioridade`, `status_operacional` e `tipo_baixa`.
+- Usar `CHECK` para campos enumerados como `tipo_item`, `tipo_movimentacao`, `status`, `prioridade`, `status_operacional` e `tipo_baixa`; no caso de perfil de usuario, preferir modelagem relacional com `perfil_id` como FK para `perfis`.
 - Garantir unicidade em `usuarios.email`, `categorias.codigo`, `categorias.nome`, `perfis.codigo`, `perfis.nome`, `itens.codigo_interno`, `equipamentos.numero_serie` e `equipamentos.tombamento` quando aplicável.
 - Usar `NUMERIC(14,3)` para quantidades de materiais e `BIGINT` para identificadores.
 - Preferir `TIMESTAMPTZ` para datas de criação e eventos.
