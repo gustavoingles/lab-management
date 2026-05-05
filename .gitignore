@@ -14,3 +14,9 @@ wheels/
 
 # Python version
 .python-version
+
+# Node
+node_modules/
+
+# Database
+db.sqlite3

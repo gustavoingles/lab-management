@@ -1,0 +1,25 @@
+{
+  "name": "lab-management",
+  "version": "1.0.0",
+  "description": "A web application for managing laboratory resources, built with Django and managed with uv.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gustavoingles/lab-management.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/gustavoingles/lab-management/issues"
+  },
+  "homepage": "https://github.com/gustavoingles/lab-management#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.2.4",
+    "tailwindcss": "^4.2.4"
+  }
+}
