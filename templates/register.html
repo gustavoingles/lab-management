@@ -1,0 +1,50 @@
+{% extends "auth_base.html" %}
+
+{% block title %}Criar conta — LabManager{% endblock %}
+{% block auth_title %}Criar sua conta{% endblock %}
+{% block auth_subtitle %}Comece a organizar seu laboratório em minutos.{% endblock %}
+
+{% block auth_footer %}
+Já tem uma conta?
+<a href="{% url 'login' %}" class="font-medium text-primary hover:underline">
+  Entrar
+</a>
+{% endblock %}
+
+{% block auth_content %}
+<form class="space-y-4" method="POST" action="">
+  {% csrf_token %}
+  {% if form.errors %}
+  <div class="p-3 rounded-md bg-destructive/15 text-destructive text-sm font-medium">
+    Verifique os erros no formulário e tente novamente.
+    {% for field in form %}
+      {% for error in field.errors %}
+        <p>- {{ error }}</p>
+      {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+      <p>- {{ error }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <div class="space-y-2">
+    <label for="name" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Nome completo</label>
+    <input id="name" name="name" placeholder="Seu nome" autocomplete="name" required class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" />
+  </div>
+  <div class="space-y-2">
+    <label for="email" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">E-mail</label>
+    <input id="email" name="email" type="email" placeholder="voce@laboratorio.com" autocomplete="email" required class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" />
+  </div>
+  <div class="space-y-2">
+    <label for="password" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Senha</label>
+    <input id="password" name="password1" type="password" placeholder="Mínimo de 8 caracteres" autocomplete="new-password" required class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" />
+  </div>
+  <div class="space-y-2">
+    <label for="confirm" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Confirmar senha</label>
+    <input id="confirm" name="password2" type="password" placeholder="Repita a senha" autocomplete="new-password" required class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" />
+  </div>
+  <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 w-full bg-[image:var(--gradient-hero)] text-primary-foreground shadow-[var(--shadow-card)] hover:opacity-90 h-9 px-4 py-2">
+    Criar conta
+  </button>
+</form>
+{% endblock %}

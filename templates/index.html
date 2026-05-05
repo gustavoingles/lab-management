@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<main>
+    <!-- Hero -->
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 -z-10 bg-[image:var(--gradient-subtle)]"></div>
+      <div class="container mx-auto px-4 py-24 md:py-32">
+        <div class="mx-auto max-w-3xl text-center">
+          <span class="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
+            <span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
+            Plataforma de gestão laboratorial
+          </span>
+          <h1 class="mt-6 text-4xl font-semibold tracking-tight text-foreground md:text-6xl">
+            Organize seu laboratório com
+            <span class="bg-[image:var(--gradient-hero)] bg-clip-text text-transparent">precisão científica</span>
+          </h1>
+          <p class="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
+            Gerencie equipamentos, reservas e equipes em uma única plataforma. Pensada para pesquisadores, técnicos e instituições de ensino.
+          </p>
+          <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <a href="{% url 'register' %}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-[image:var(--gradient-hero)] text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-90 h-10 px-8">
+              Começar agora <i data-lucide="arrow-right" class="ml-2 h-4 w-4"></i>
+            </a>
+            <a href="{% url 'login' %}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-8">
+              Já tenho conta
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="container mx-auto px-4 py-20">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+          Tudo o que seu laboratório precisa
+        </h2>
+        <p class="mt-4 text-muted-foreground">
+          Recursos pensados para a rotina real de quem trabalha com ciência.
+        </p>
+      </div>
+      <div class="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <!-- Feature 1 -->
+        <div class="group rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)] transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-elegant)]">
+          <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+            <i data-lucide="boxes" class="h-5 w-5"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-card-foreground">Inventário centralizado</h3>
+          <p class="mt-2 text-sm text-muted-foreground">Cadastre equipamentos, insumos e materiais em um único lugar com histórico completo.</p>
+        </div>
+        <!-- Feature 2 -->
+        <div class="group rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)] transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-elegant)]">
+          <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+            <i data-lucide="calendar-check" class="h-5 w-5"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-card-foreground">Reservas e agendamento</h3>
+          <p class="mt-2 text-sm text-muted-foreground">Reserve recursos por horário e evite conflitos entre pesquisadores e turmas.</p>
+        </div>
+        <!-- Feature 3 -->
+        <div class="group rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)] transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-elegant)]">
+          <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+            <i data-lucide="users" class="h-5 w-5"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-card-foreground">Gestão de usuários</h3>
+          <p class="mt-2 text-sm text-muted-foreground">Controle quem acessa cada recurso com perfis e permissões personalizadas.</p>
+        </div>
+        <!-- Feature 4 -->
+        <div class="group rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)] transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-elegant)]">
+          <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+            <i data-lucide="bar-chart-3" class="h-5 w-5"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-card-foreground">Relatórios e métricas</h3>
+          <p class="mt-2 text-sm text-muted-foreground">Acompanhe utilização, manutenção e disponibilidade com dashboards claros.</p>
+        </div>
+        <!-- Feature 5 -->
+        <div class="group rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)] transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-elegant)]">
+          <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+            <i data-lucide="shield-check" class="h-5 w-5"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-card-foreground">Segurança e auditoria</h3>
+          <p class="mt-2 text-sm text-muted-foreground">Rastreie todas as ações com registros detalhados e controle de acesso.</p>
+        </div>
+        <!-- Feature 6 -->
+        <div class="group rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)] transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-elegant)]">
+          <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+            <i data-lucide="beaker" class="h-5 w-5"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-card-foreground">Feito para laboratórios</h3>
+          <p class="mt-2 text-sm text-muted-foreground">Pensado para a rotina de pesquisa, ensino e ambientes científicos.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="how" class="container mx-auto px-4 pb-24">
+      <div class="overflow-hidden rounded-3xl bg-[image:var(--gradient-hero)] p-12 text-center shadow-[var(--shadow-elegant)]">
+        <h2 class="text-3xl font-semibold text-primary-foreground md:text-4xl">
+          Pronto para modernizar seu laboratório?
+        </h2>
+        <p class="mx-auto mt-4 max-w-xl text-primary-foreground/85">
+          Crie sua conta gratuitamente e comece a gerenciar recursos em minutos.
+        </p>
+        <a href="{% url 'register' %}" class="mt-8 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-8">
+          Criar conta grátis
+        </a>
+      </div>
+    </section>
+</main>
+
+<footer id="about" class="border-t border-border bg-card/30">
+    <div class="container mx-auto flex flex-col items-center justify-between gap-4 px-4 py-8 text-sm text-muted-foreground md:flex-row">
+      <p>© 2026 LabManager. Todos os direitos reservados.</p>
+      <div class="flex gap-6">
+        <a href="{% url 'login' %}" class="hover:text-foreground">Entrar</a>
+        <a href="{% url 'register' %}" class="hover:text-foreground">Cadastrar</a>
+      </div>
+    </div>
+</footer>
+{% endblock %}
