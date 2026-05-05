@@ -1,81 +1,72 @@
 # lab-management
 
-A web application for managing laboratory resources, built with Django and managed with uv.
+Sistema para controle de estoque e manutencao de equipamentos de laboratorio (backend Django).
 
-## Tech Stack
+**O que ja existe neste repositorio:**
 
-- **Python** 3.14
-- **Django** 6.0.4
-- **django-environ** — environment variable management via `.env`
-- **psycopg** 3 — PostgreSQL adapter
-- **uv** — project and dependency management
+- **Modelo relacional (DDL):** [database/postgresql_schema.sql](database/postgresql_schema.sql)
+- **Documentacao da modelagem:** [docs/modelagem-postgresql.md](docs/modelagem-postgresql.md)
 
-## Project Structure
+## Requisitos
 
-```
-lab-management/
-├── lab_management/       # Django project configuration
-│   ├── settings.py
-│   ├── urls.py
-│   ├── asgi.py
-│   └── wsgi.py
-├── manage.py
-├── pyproject.toml        # Project metadata and dependencies
-├── uv.lock               # Locked dependency versions
-└── .env                  # Environment variables (not committed)
-```
+- Python 3.14
+- PostgreSQL (compatível com a versao instalada localmente)
+- `uv` (gerenciador de dependencias e runner usado no projeto)
 
-## Setup
+## Setup local
 
-### 1. Clone the repository
+1. Clonar o repositorio
 
 ```bash
 git clone <repo-url>
 cd lab-management
 ```
 
-### 2. Install dependencies
+2. Instalar dependencias
 
 ```bash
 uv sync
 ```
 
-### 3. Configure environment variables
-
-Copy the example below into a `.env` file at the project root (next to `manage.py`):
+3. Criar o arquivo `.env` com as variaveis necessarias (exemplo):
 
 ```env
-SECRET_KEY=your-secret-key-here
+SECRET_KEY=troque_por_uma_chave_secreta
 DEBUG=True
-DATABASE_URL=postgres://user:password@localhost:5432/lab_management
+DATABASE_URL=postgres://postgres:senha@localhost:5432/lab_management
 ```
 
-### 4. Apply migrations
+Observacao: se seu banco tem outro nome (por exemplo `lab-management` com hifen), ajuste `DATABASE_URL` conforme necessario.
+
+4. Escolha uma das estrategias de banco abaixo.
+
+### Estrategia A (Django gerencia o schema)
+
+Use apenas migracoes Django para criar as tabelas.
 
 ```bash
 uv run python manage.py migrate
 ```
 
-### 5. Create a superuser
+### Estrategia B (DDL aplicado manualmente)
+
+Se voce aplicar o DDL manualmente, deixe essas tabelas fora do controle do Django (use `managed = False` nos modelos correspondentes) ou use um baseline com `--fake-initial` quando aplicavel.
+
+```bash
+psql "postgres://<usuario>:<senha>@<host>:<porta>/<dbname>" -f database/postgresql_schema.sql
+```
+
+5. Criar superusuario e rodar o servidor de desenvolvimento:
 
 ```bash
 uv run python manage.py createsuperuser
-```
-
-### 6. Run the development server
-
-```bash
 uv run python manage.py runserver
 ```
 
-The app will be available at `http://127.0.0.1:8000/`. The admin interface is at `/admin/`.
+## Dependencias
 
-## Adding Dependencies
-
-This project uses `uv` for dependency management. Always use `uv add` to install new packages:
+Este projeto usa `uv` para gerenciar dependencias. Sempre use `uv add` ao instalar novos pacotes:
 
 ```bash
 uv add <package-name>
 ```
-
-This keeps `pyproject.toml` and `uv.lock` in sync automatically.
