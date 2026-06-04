@@ -36,6 +36,8 @@ def registrar_movimentacao(
     ordem_servico=None,
     inventario_item=None,
     baixa=None,
+    estoque_ja_baixado: bool = False,
+    saldo_resultante: Decimal | None = None,
 ) -> Movimentacao:
     if quantidade <= 0:
         raise ValidationError("Quantidade deve ser maior que zero.")
@@ -57,11 +59,22 @@ def registrar_movimentacao(
         if not localizacao_origem_id:
             raise ValidationError("Saída exige localização de origem.")
         estoque = _get_or_create_estoque(item, localizacao_origem_id)
-        if estoque.quantidade_disponivel < quantidade:
-            raise ValidationError("Saldo insuficiente para saída.")
-        estoque.quantidade_disponivel -= quantidade
-        estoque.save(update_fields=["quantidade_disponivel", "atualizado_em"])
-        saldo_resultante = estoque.quantidade_disponivel
+        if estoque_ja_baixado:
+            if saldo_resultante is None:
+                estoque.refresh_from_db()
+                saldo_resultante = estoque.quantidade_disponivel
+        else:
+            livre = estoque.quantidade_disponivel - estoque.quantidade_reservada
+            if livre < quantidade:
+                raise ValidationError(
+                    "Saldo livre insuficiente para saída "
+                    f"(livre: {livre}, solicitado: {quantidade})."
+                )
+            if estoque.quantidade_disponivel < quantidade:
+                raise ValidationError("Saldo insuficiente para saída.")
+            estoque.quantidade_disponivel -= quantidade
+            estoque.save(update_fields=["quantidade_disponivel", "atualizado_em"])
+            saldo_resultante = estoque.quantidade_disponivel
         if lote:
             if lote.quantidade_disponivel < quantidade:
                 raise ValidationError("Saldo do lote insuficiente.")
