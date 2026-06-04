@@ -19,6 +19,8 @@ Sistema para controle de estoque e manutenção de equipamentos de laboratório 
 
 **Documentação completa da API:** [docs/guia-backend-api.md](docs/guia-backend-api.md) (passo a passo, todos os endpoints, perfis e exemplos).
 
+**Guia de apresentação ao cliente:** [docs/guia-apresentacao-cliente.md](docs/guia-apresentacao-cliente.md) (telas, dependências, roteiro de demo).
+
 Referências: [database/postgresql_schema.sql](database/postgresql_schema.sql), [docs/modelagem-postgresql.md](docs/modelagem-postgresql.md), [.github/copilot-instructions.md](.github/copilot-instructions.md).
 
 ## Setup
