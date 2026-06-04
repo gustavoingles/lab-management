@@ -8,6 +8,7 @@
     <a href="{% url 'app:solicitacoes_perfil_admin' %}?todas=1" class="rounded-md border border-input px-3 py-1.5 {% if request.GET.todas %}bg-muted{% endif %}">Todas</a>
   </div>
 </div>
+{% include "app/_page_intro.html" with intro_template="app/intros/solicitacao_perfil_admin.html" %}
 
 <div class="space-y-4">
   {% for s in solicitacoes %}

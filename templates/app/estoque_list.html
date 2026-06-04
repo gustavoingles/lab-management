@@ -5,6 +5,7 @@
   <h2 class="text-2xl font-semibold">Estoque</h2>
   <a href="{% url 'app:movimentacao_nova' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Nova movimentação</a>
 </div>
+{% include "app/_page_intro.html" with intro_template="app/intros/estoque.html" %}
 {% if alertas %}
 <div class="mb-6 rounded-xl border border-destructive/30 bg-destructive/10 p-4">
   <h3 class="font-medium text-destructive">Alertas ({{ alertas|length }})</h3>

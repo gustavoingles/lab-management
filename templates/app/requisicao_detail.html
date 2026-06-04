@@ -6,10 +6,8 @@
   <h2 class="mt-2 text-2xl font-semibold">Requisição #{{ requisicao.id }}</h2>
   <p class="text-muted-foreground">{{ requisicao.get_status_display }} · {{ requisicao.solicitante.nome }}</p>
   <p class="mt-2 text-sm">{{ requisicao.finalidade }}</p>
-  {% if requisicao.status == "aprovada" %}
-  <p class="mt-2 text-sm text-muted-foreground">Itens aprovados têm estoque <strong>reservado</strong> até o atendimento.</p>
-  {% endif %}
 </div>
+{% include "app/_page_intro.html" with intro_template="app/intros/requisicao_detalhe.html" %}
 {% if pode_aprovar %}
   {% if requisicao.status == "aberta" or requisicao.status == "em_aprovacao" %}
 <div class="mb-6 flex gap-2">
@@ -55,7 +53,8 @@
     </tbody>
   </table>
   {% if requisicao.status != "atendida" and requisicao.status != "rejeitada" and requisicao.status != "cancelada" %}
-  <form method="post" action="{% url 'app:requisicao_item_add' requisicao.pk %}" class="mt-6 flex flex-wrap items-end gap-3 border-t border-border pt-6">
+  {% include "app/_page_intro.html" with intro_template="app/intros/forms/requisicao_item.html" %}
+  <form method="post" action="{% url 'app:requisicao_item_add' requisicao.pk %}" class="mt-2 flex flex-wrap items-end gap-3 border-t border-border pt-6">
     {% csrf_token %}
     {{ item_form.item.label_tag }} {{ item_form.item }}
     {{ item_form.quantidade_solicitada.label_tag }} {{ item_form.quantidade_solicitada }}

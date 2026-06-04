@@ -6,6 +6,7 @@
   <h2 class="mt-2 text-2xl font-semibold">{{ inventario.nome }}</h2>
   <p class="text-sm text-muted-foreground">{{ inventario.get_status_display }} · {{ inventario.descricao }}</p>
 </div>
+{% include "app/_page_intro.html" with intro_template="app/intros/inventario_detalhe.html" %}
 {% if pode_escrever %}
 <div class="mb-6 rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
   <h3 class="mb-3 text-sm font-medium">Adicionar linha de contagem</h3>

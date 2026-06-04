@@ -69,6 +69,7 @@ class CategoriaUpdateView(PerfilRequiredMixin, FormPageMixin, UpdateView):
     form_class = CategoriaForm
     template_name = "app/form.html"
     page_title = "Editar categoria"
+    intro_template = "app/intros/forms/categoria.html"
     cancel_url_name = "app:categorias"
     success_url = reverse_lazy("app:categorias")
 
@@ -100,6 +101,7 @@ class UnidadeMedidaCreateView(PerfilRequiredMixin, FormPageMixin, CreateView):
     form_class = UnidadeMedidaForm
     template_name = "app/form.html"
     page_title = "Nova unidade de medida"
+    intro_template = "app/intros/forms/unidade_medida.html"
     cancel_url_name = "app:unidades_medida"
     success_url = reverse_lazy("app:unidades_medida")
 
@@ -114,6 +116,7 @@ class UnidadeMedidaUpdateView(PerfilRequiredMixin, FormPageMixin, UpdateView):
     form_class = UnidadeMedidaForm
     template_name = "app/form.html"
     page_title = "Editar unidade de medida"
+    intro_template = "app/intros/forms/unidade_medida.html"
     cancel_url_name = "app:unidades_medida"
     success_url = reverse_lazy("app:unidades_medida")
 
@@ -137,6 +140,7 @@ class LocalizacaoUpdateView(PerfilRequiredMixin, FormPageMixin, UpdateView):
     form_class = LocalizacaoForm
     template_name = "app/form.html"
     page_title = "Editar localização"
+    intro_template = "app/intros/forms/localizacao.html"
     cancel_url_name = "app:localizacoes"
     success_url = reverse_lazy("app:localizacoes")
 
@@ -160,6 +164,7 @@ class ItemUpdateView(PerfilRequiredMixin, FormPageMixin, UpdateView):
     form_class = ItemForm
     template_name = "app/form.html"
     page_title = "Editar item"
+    intro_template = "app/intros/forms/item.html"
     cancel_url_name = "app:itens"
     success_url = reverse_lazy("app:itens")
 
@@ -183,6 +188,7 @@ class EquipamentoUpdateView(PerfilRequiredMixin, FormPageMixin, UpdateView):
     form_class = EquipamentoForm
     template_name = "app/form.html"
     page_title = "Editar equipamento"
+    intro_template = "app/intros/forms/equipamento.html"
     cancel_url_name = "app:equipamentos"
     success_url = reverse_lazy("app:equipamentos")
 
@@ -226,6 +232,7 @@ class LoteCreateView(PerfilRequiredMixin, FormPageMixin, CreateView):
     form_class = LoteForm
     template_name = "app/form.html"
     page_title = "Novo lote"
+    intro_template = "app/intros/forms/lote.html"
     cancel_url_name = "app:lotes"
     success_url = reverse_lazy("app:lotes")
 
@@ -246,6 +253,7 @@ class LoteUpdateView(PerfilRequiredMixin, FormPageMixin, UpdateView):
     form_class = LoteForm
     template_name = "app/form.html"
     page_title = "Editar lote"
+    intro_template = "app/intros/forms/lote.html"
     cancel_url_name = "app:lotes"
     success_url = reverse_lazy("app:lotes")
 
@@ -269,6 +277,7 @@ class EstoqueUpdateView(PerfilRequiredMixin, FormPageMixin, UpdateView):
     form_class = EstoqueNiveisForm
     template_name = "app/form.html"
     page_title = "Níveis de estoque"
+    intro_template = "app/intros/forms/estoque.html"
     cancel_url_name = "app:estoques"
     success_url = reverse_lazy("app:estoques")
 
@@ -328,6 +337,7 @@ class ManutencaoCreateView(PerfilRequiredMixin, FormPageMixin, CreateView):
     form_class = ManutencaoForm
     template_name = "app/form.html"
     page_title = "Registrar manutenção"
+    intro_template = "app/intros/forms/manutencao.html"
     cancel_url_name = "app:manutencoes"
     success_url = reverse_lazy("app:manutencoes")
 
@@ -364,6 +374,7 @@ class ManutencaoUpdateView(PerfilRequiredMixin, FormPageMixin, UpdateView):
     form_class = ManutencaoForm
     template_name = "app/form.html"
     page_title = "Editar manutenção"
+    intro_template = "app/intros/forms/manutencao.html"
     cancel_url_name = "app:manutencoes"
     success_url = reverse_lazy("app:manutencoes")
 
@@ -398,6 +409,7 @@ class InventarioCreateView(PerfilRequiredMixin, FormPageMixin, CreateView):
     form_class = InventarioForm
     template_name = "app/form.html"
     page_title = "Novo inventário"
+    intro_template = "app/intros/forms/inventario.html"
     cancel_url_name = "app:inventarios"
     success_url = reverse_lazy("app:inventarios")
 
@@ -417,6 +429,7 @@ class InventarioUpdateView(PerfilRequiredMixin, FormPageMixin, UpdateView):
     form_class = InventarioForm
     template_name = "app/form.html"
     page_title = "Editar inventário"
+    intro_template = "app/intros/forms/inventario.html"
     cancel_url_name = "app:inventarios"
     success_url = reverse_lazy("app:inventarios")
 
@@ -493,6 +506,7 @@ class BaixaCreateView(PerfilRequiredMixin, FormPageMixin, CreateView):
     form_class = BaixaForm
     template_name = "app/form.html"
     page_title = "Registrar baixa / descarte"
+    intro_template = "app/intros/forms/baixa.html"
     cancel_url_name = "app:baixas"
     success_url = reverse_lazy("app:baixas")
 
@@ -508,6 +522,7 @@ class BaixaUpdateView(PerfilRequiredMixin, FormPageMixin, UpdateView):
     form_class = BaixaForm
     template_name = "app/form.html"
     page_title = "Editar baixa"
+    intro_template = "app/intros/forms/baixa.html"
     cancel_url_name = "app:baixas"
     success_url = reverse_lazy("app:baixas")
 
@@ -527,7 +542,7 @@ class BaixaDeleteView(ConfirmDeleteView):
 PERFIS_RESERVA_EQUIP = tuple(PERFIS_SOLICITACAO | PERFIS_ESTOQUE)
 
 
-class ReservaEquipamentoListView(PerfilRequiredMixin, ListView):
+class ReservaEquipamentoListView(PerfilRequiredMixin, PodeEscreverMixin, ListView):
     perfis_required = PERFIS_RESERVA_EQUIP
     model = ReservaEquipamento
     template_name = "app/reserva_equipamento_list.html"
@@ -545,17 +560,24 @@ class ReservaEquipamentoListView(PerfilRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx["pode_aprovar"] = usuario_tem_perfil(self.request.user, *PERFIS_GESTAO)
+        ctx["total_equipamentos"] = Equipamento.objects.count()
         return ctx
 
 
-class ReservaEquipamentoCreateView(PerfilRequiredMixin, FormPageMixin, CreateView):
+class ReservaEquipamentoCreateView(PerfilRequiredMixin, PodeEscreverMixin, FormPageMixin, CreateView):
     perfis_required = PERFIS_RESERVA_EQUIP
     model = ReservaEquipamento
     form_class = ReservaEquipamentoForm
     template_name = "app/form.html"
     page_title = "Reservar equipamento"
+    intro_template = "app/intros/forms/reserva_equipamento.html"
     cancel_url_name = "app:reservas_equipamento"
     success_url = reverse_lazy("app:reservas_equipamento")
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["sem_equipamentos_cadastrados"] = not Equipamento.objects.exists()
+        return ctx
 
     def form_valid(self, form):
         try:

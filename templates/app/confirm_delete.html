@@ -2,9 +2,10 @@
 {% block title %}{{ page_title }} — LabManager{% endblock %}
 {% block app_content %}
 <div class="mx-auto max-w-lg">
-  <h2 class="mb-4 text-2xl font-semibold">{{ page_title }}</h2>
+  <h2 class="mb-2 text-2xl font-semibold">{{ page_title }}</h2>
+  {% include "app/_page_intro.html" with intro_template=intro_template %}
   <p class="mb-6 text-sm text-muted-foreground">
-    Tem certeza que deseja excluir <strong>{{ object }}</strong>? Esta ação não pode ser desfeita.
+    Tem certeza que deseja excluir <strong>{{ object }}</strong>?
   </p>
   <form method="post" class="flex gap-3">
     {% csrf_token %}

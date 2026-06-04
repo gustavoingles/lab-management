@@ -2,7 +2,24 @@
 {% block title %}{{ page_title }} — LabManager{% endblock %}
 {% block app_content %}
 <div class="mx-auto max-w-lg">
-  <h2 class="mb-6 text-2xl font-semibold">{{ page_title }}</h2>
+  <h2 class="mb-2 text-2xl font-semibold">{{ page_title }}</h2>
+  {% include "app/_page_intro.html" with intro_template=intro_template %}
+  {% if form_alert %}
+  <div class="mb-4 rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-foreground">
+    {{ form_alert }}
+  </div>
+  {% endif %}
+  {% if sem_equipamentos_cadastrados %}
+  <div class="mb-4 rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-sm">
+    Nenhum equipamento disponível para reserva.
+    {% if pode_escrever %}
+    Fluxo: <a href="{% url 'app:item_novo' %}" class="text-primary hover:underline">criar item</a> (tipo equipamento) →
+    <a href="{% url 'app:equipamento_novo' %}" class="text-primary hover:underline">cadastrar equipamento</a>.
+    {% else %}
+    Peça ao almoxarife cadastrar em <a href="{% url 'app:equipamentos' %}" class="text-primary hover:underline">Equipamentos</a>.
+    {% endif %}
+  </div>
+  {% endif %}
   <form method="post" class="space-y-4 rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
     {% csrf_token %}
     {% if form.non_field_errors %}

@@ -5,6 +5,7 @@
   <h2 class="text-2xl font-semibold">Inventários</h2>
   {% if pode_escrever %}<a href="{% url 'app:inventario_novo' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Novo</a>{% endif %}
 </div>
+{% include "app/_page_intro.html" with intro_template="app/intros/inventarios.html" %}
 <div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
   <table class="w-full text-sm">
     <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">Nome</th><th class="p-3">Status</th><th class="p-3">Responsável</th><th class="p-3">Início</th><th class="p-3">Ações</th></tr></thead>

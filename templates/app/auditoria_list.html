@@ -1,7 +1,8 @@
 {% extends "app/layout.html" %}
 {% block title %}Auditoria — LabManager{% endblock %}
 {% block app_content %}
-<h2 class="mb-6 text-2xl font-semibold">Auditoria</h2>
+<h2 class="mb-2 text-2xl font-semibold">Auditoria</h2>
+{% include "app/_page_intro.html" with intro_template="app/intros/auditoria.html" %}
 <div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
   <table class="w-full text-sm">
     <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">Data</th><th class="p-3">Usuário</th><th class="p-3">Ação</th><th class="p-3">Entidade</th></tr></thead>

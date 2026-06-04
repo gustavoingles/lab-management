@@ -45,9 +45,7 @@ class SolicitacaoAlteracaoPerfilCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx["page_title"] = "Solicitar troca de perfil"
-        ctx["page_subtitle"] = (
-            "Sua solicitação será enviada para análise de um administrador ou gestor."
-        )
+        ctx["intro_template"] = "app/intros/forms/solicitacao_perfil.html"
         ctx["cancel_url"] = reverse("app:minha_solicitacao_perfil")
         ctx["submit_label"] = "Enviar solicitação"
         return ctx

@@ -5,6 +5,7 @@
   <h2 class="text-2xl font-semibold">Ordens de serviço</h2>
   {% if pode_escrever %}<a href="{% url 'app:ordem_servico_nova' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Nova OS</a>{% endif %}
 </div>
+{% include "app/_page_intro.html" with intro_template="app/intros/ordens_servico.html" %}
 <div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
   <table class="w-full text-sm">
     <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">#</th><th class="p-3">Equipamento</th><th class="p-3">Status</th><th class="p-3">Ações</th></tr></thead>
