@@ -441,6 +441,12 @@ class Movimentacao(models.Model):
     observacao = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return (
+            f"{self.get_tipo_movimentacao_display()} — "
+            f"{self.item.codigo_interno} ({self.created_at:%d/%m/%Y %H:%M})"
+        )
+
 
 class Auditoria(models.Model):
     usuario = models.ForeignKey(
