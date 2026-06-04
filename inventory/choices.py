@@ -72,6 +72,13 @@ class TipoBaixa(models.TextChoices):
     AVARIA = "avaria_irrecuperavel", "Avaria irrecuperável"
 
 
+class StatusReservaEquipamento(models.TextChoices):
+    PENDENTE = "pendente", "Pendente"
+    CONFIRMADA = "confirmada", "Confirmada"
+    CANCELADA = "cancelada", "Cancelada"
+    ENCERRADA = "encerrada", "Encerrada"
+
+
 class TipoMovimentacao(models.TextChoices):
     ENTRADA = "entrada", "Entrada"
     SAIDA = "saida", "Saída"

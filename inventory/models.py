@@ -8,6 +8,7 @@ from inventory.choices import (
     StatusOperacional,
     StatusOrdemServico,
     StatusRequisicao,
+    StatusReservaEquipamento,
     TipoBaixa,
     TipoItem,
     TipoLocalizacao,
@@ -103,6 +104,45 @@ class Item(models.Model):
         return f"{self.codigo_interno} — {self.nome}"
 
 
+class ReservaEquipamento(models.Model):
+    equipamento = models.ForeignKey(
+        "Equipamento",
+        on_delete=models.CASCADE,
+        related_name="reservas",
+    )
+    solicitante = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="reservas_equipamento",
+    )
+    aprovador = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="reservas_equipamento_aprovadas",
+    )
+    finalidade = models.TextField()
+    inicio = models.DateTimeField()
+    fim = models.DateTimeField()
+    status = models.CharField(
+        max_length=20,
+        choices=StatusReservaEquipamento.choices,
+        default=StatusReservaEquipamento.PENDENTE,
+    )
+    observacao = models.TextField(blank=True)
+    criada_em = models.DateTimeField(auto_now_add=True)
+    atualizada_em = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "reserva de equipamento"
+        verbose_name_plural = "reservas de equipamento"
+        ordering = ["-inicio"]
+
+    def __str__(self):
+        return f"{self.equipamento} ({self.inicio:%d/%m/%Y %H:%M})"
+
+
 class Equipamento(models.Model):
     item = models.OneToOneField(Item, on_delete=models.CASCADE, related_name="equipamento")
     numero_serie = models.CharField(max_length=200, unique=True)
@@ -142,8 +182,12 @@ class Estoque(models.Model):
         ]
 
     @property
+    def saldo_livre(self):
+        return self.quantidade_disponivel - self.quantidade_reservada
+
+    @property
     def abaixo_alerta(self) -> bool:
-        return self.quantidade_disponivel <= self.nivel_alerta
+        return self.saldo_livre <= self.nivel_alerta
 
 
 class Lote(models.Model):
@@ -201,6 +245,13 @@ class RequisicaoItem(models.Model):
         Requisicao, on_delete=models.CASCADE, related_name="itens"
     )
     item = models.ForeignKey(Item, on_delete=models.RESTRICT, related_name="requisicoes")
+    localizacao_reserva = models.ForeignKey(
+        Localizacao,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="requisicoes_reservadas",
+    )
     lote_sugerido = models.ForeignKey(
         Lote, on_delete=models.SET_NULL, null=True, blank=True
     )
