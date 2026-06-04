@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Painel — LabManager{% endblock %}
+
+{% block content %}
+<main class="container mx-auto px-4 py-12">
+  <div class="mx-auto max-w-3xl">
+    <h1 class="text-3xl font-semibold text-foreground">Olá, {{ user.nome }}</h1>
+    <p class="mt-2 text-muted-foreground">
+      Perfil: <strong>{{ user.perfil.nome }}</strong> ({{ user.perfil.codigo }})
+    </p>
+    <p class="mt-6 text-sm text-muted-foreground">
+      Use a API REST em <code class="rounded bg-muted px-1">/api/v1/</code> com JWT
+      (<code class="rounded bg-muted px-1">POST /api/v1/auth/token/</code>).
+    </p>
+    <ul class="mt-8 list-disc space-y-2 pl-6 text-sm text-foreground">
+      <li>Catálogo: categorias, itens, equipamentos, localizações</li>
+      <li>Estoque: estoques, lotes, movimentações, alertas em <code>/api/v1/estoques/alertas/</code></li>
+      <li>Requisições: aprovar/rejeitar/atender itens</li>
+      <li>Manutenção: ordens de serviço e manutenções</li>
+      <li>Inventário e auditoria (conforme perfil)</li>
+    </ul>
+    <div class="mt-10 flex gap-4">
+      <a href="{% url 'logout' %}" class="text-sm font-medium text-primary hover:underline">Sair</a>
+      <a href="{% url 'index' %}" class="text-sm text-muted-foreground hover:underline">Voltar ao início</a>
+    </div>
+  </div>
+</main>
+{% endblock %}

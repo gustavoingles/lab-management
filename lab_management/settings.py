@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'accounts',
+    'inventory',
 ]
 
 AUTH_USER_MODEL = "accounts.Usuario"
@@ -125,7 +126,7 @@ STATICFILES_DIRS = [
 ]
 
 # Authentication Configuration
-LOGIN_REDIRECT_URL = 'index'
+LOGIN_REDIRECT_URL = 'painel'
 LOGOUT_REDIRECT_URL = 'index'
 
 AUTHENTICATION_BACKENDS = [
