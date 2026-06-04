@@ -42,7 +42,7 @@ from inventory.services import (
     rejeitar_requisicao,
     registrar_movimentacao,
 )
-from lab_management.mixins import PerfilRequiredMixin
+from lab_management.mixins import PerfilRequiredMixin, PodeEscreverMixin
 from lab_management.web_forms import (
     CategoriaForm,
     EquipamentoForm,
@@ -76,7 +76,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         return ctx
 
 
-class CategoriaListView(PerfilRequiredMixin, ListView):
+class CategoriaListView(PerfilRequiredMixin, PodeEscreverMixin, ListView):
     perfis_required = tuple(PERFIS_LEITURA_AMPLA)
     model = Categoria
     template_name = "app/categoria_list.html"
@@ -98,7 +98,7 @@ class CategoriaCreateView(PerfilRequiredMixin, CreateView):
         return ctx
 
 
-class ItemListView(PerfilRequiredMixin, ListView):
+class ItemListView(PerfilRequiredMixin, PodeEscreverMixin, ListView):
     perfis_required = tuple(PERFIS_LEITURA_AMPLA)
     model = Item
     template_name = "app/item_list.html"
@@ -126,7 +126,7 @@ class ItemCreateView(PerfilRequiredMixin, CreateView):
         return ctx
 
 
-class EquipamentoListView(PerfilRequiredMixin, ListView):
+class EquipamentoListView(PerfilRequiredMixin, PodeEscreverMixin, ListView):
     perfis_required = tuple(PERFIS_LEITURA_AMPLA)
     model = Equipamento
     template_name = "app/equipamento_list.html"
@@ -151,7 +151,7 @@ class EquipamentoCreateView(PerfilRequiredMixin, CreateView):
         return ctx
 
 
-class LocalizacaoListView(PerfilRequiredMixin, ListView):
+class LocalizacaoListView(PerfilRequiredMixin, PodeEscreverMixin, ListView):
     perfis_required = tuple(PERFIS_LEITURA_AMPLA)
     model = Localizacao
     template_name = "app/localizacao_list.html"
@@ -173,7 +173,7 @@ class LocalizacaoCreateView(PerfilRequiredMixin, CreateView):
         return ctx
 
 
-class EstoqueListView(PerfilRequiredMixin, ListView):
+class EstoqueListView(PerfilRequiredMixin, PodeEscreverMixin, ListView):
     perfis_required = tuple(PERFIS_LEITURA_AMPLA)
     model = Estoque
     template_name = "app/estoque_list.html"
@@ -362,8 +362,9 @@ class RequisicaoAtenderItemView(PerfilRequiredMixin, View):
         return redirect("app:requisicao_detalhe", pk=pk)
 
 
-class OrdemServicoListView(PerfilRequiredMixin, ListView):
+class OrdemServicoListView(PerfilRequiredMixin, PodeEscreverMixin, ListView):
     perfis_required = tuple(PERFIS_LEITURA_AMPLA)
+    write_perfis = tuple(PERFIS_GESTAO | PERFIS_MANUTENCAO)
     model = OrdemServico
     template_name = "app/ordem_servico_list.html"
     context_object_name = "ordens"
