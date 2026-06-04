@@ -1,0 +1,38 @@
+{% extends "app/layout.html" %}
+{% block title %}Início — LabManager{% endblock %}
+{% block app_content %}
+<div class="mb-8">
+  <h2 class="text-2xl font-semibold">Olá, {{ user.nome }}</h2>
+  <p class="text-muted-foreground">Resumo do laboratório</p>
+</div>
+<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+  <div class="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
+    <p class="text-sm text-muted-foreground">Itens ativos</p>
+    <p class="mt-2 text-3xl font-semibold">{{ total_itens }}</p>
+  </div>
+  <div class="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
+    <p class="text-sm text-muted-foreground">Requisições em aberto</p>
+    <p class="mt-2 text-3xl font-semibold">{{ requisicoes_abertas }}</p>
+  </div>
+  <div class="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
+    <p class="text-sm text-muted-foreground">Alertas de estoque</p>
+    <p class="mt-2 text-3xl font-semibold text-destructive">{{ alertas_estoque }}</p>
+  </div>
+  <div class="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
+    <p class="text-sm text-muted-foreground">OS em andamento</p>
+    <p class="mt-2 text-3xl font-semibold">{{ os_abertas }}</p>
+  </div>
+</div>
+<div class="mt-10 grid gap-4 md:grid-cols-2">
+  <a href="{% url 'app:requisicao_nova' %}" class="rounded-xl border border-border bg-card p-6 transition hover:shadow-[var(--shadow-card)]">
+    <i data-lucide="clipboard-plus" class="h-6 w-6 text-primary"></i>
+    <h3 class="mt-3 font-semibold">Nova requisição</h3>
+    <p class="mt-1 text-sm text-muted-foreground">Solicitar materiais ao almoxarifado</p>
+  </a>
+  <a href="{% url 'app:movimentacao_nova' %}" class="rounded-xl border border-border bg-card p-6 transition hover:shadow-[var(--shadow-card)]">
+    <i data-lucide="arrow-left-right" class="h-6 w-6 text-primary"></i>
+    <h3 class="mt-3 font-semibold">Movimentar estoque</h3>
+    <p class="mt-1 text-sm text-muted-foreground">Entrada, saída ou transferência</p>
+  </a>
+</div>
+{% endblock %}

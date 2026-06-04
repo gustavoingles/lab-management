@@ -1,0 +1,56 @@
+{% extends "app/layout.html" %}
+{% block title %}Requisição #{{ requisicao.id }} — LabManager{% endblock %}
+{% block app_content %}
+<div class="mb-6">
+  <a href="{% url 'app:requisicoes' %}" class="text-sm text-primary hover:underline">← Voltar</a>
+  <h2 class="mt-2 text-2xl font-semibold">Requisição #{{ requisicao.id }}</h2>
+  <p class="text-muted-foreground">{{ requisicao.get_status_display }} · {{ requisicao.solicitante.nome }}</p>
+  <p class="mt-2 text-sm">{{ requisicao.finalidade }}</p>
+</div>
+{% if pode_aprovar %}
+  {% if requisicao.status == "aberta" or requisicao.status == "em_aprovacao" %}
+<div class="mb-6 flex gap-2">
+  <form method="post" action="{% url 'app:requisicao_aprovar' requisicao.pk %}">{% csrf_token %}<button class="h-9 rounded-md bg-primary px-4 text-sm text-primary-foreground">Aprovar</button></form>
+  <form method="post" action="{% url 'app:requisicao_rejeitar' requisicao.pk %}" class="flex gap-2">{% csrf_token %}
+    <input name="motivo" placeholder="Motivo rejeição" class="h-9 rounded-md border border-input px-3 text-sm">
+    <button class="h-9 rounded-md border border-destructive px-4 text-sm text-destructive">Rejeitar</button>
+  </form>
+</div>
+  {% endif %}
+{% endif %}
+<div class="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
+  <h3 class="font-semibold">Itens</h3>
+  <table class="mt-4 w-full text-sm">
+    <thead class="text-muted-foreground"><tr><th class="pb-2 text-left">Item</th><th>Solicitado</th><th>Aprovado</th><th>Atendido</th><th></th></tr></thead>
+    <tbody>
+      {% for linha in requisicao.itens.all %}
+      <tr class="border-t border-border">
+        <td class="py-3">{{ linha.item.nome }}</td>
+        <td>{{ linha.quantidade_solicitada }}</td>
+        <td>{{ linha.quantidade_aprovada|default:"—" }}</td>
+        <td>{{ linha.quantidade_atendida|default:"—" }}</td>
+        <td>
+          {% if pode_atender and requisicao.status == "aprovada" and not linha.quantidade_atendida %}
+          <form method="post" action="{% url 'app:requisicao_atender_item' requisicao.pk linha.pk %}" class="flex gap-1">
+            {% csrf_token %}
+            <select name="localizacao_origem_id" class="h-8 rounded border border-input text-xs" required>
+              {% for loc in localizacoes %}<option value="{{ loc.id }}">{{ loc.nome }}</option>{% endfor %}
+            </select>
+            <button class="h-8 rounded bg-primary px-2 text-xs text-primary-foreground">Atender</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}<tr><td colspan="5" class="py-4 text-muted-foreground">Sem itens.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+  {% if requisicao.status != "atendida" and requisicao.status != "rejeitada" and requisicao.status != "cancelada" %}
+  <form method="post" action="{% url 'app:requisicao_item_add' requisicao.pk %}" class="mt-6 flex flex-wrap items-end gap-3 border-t border-border pt-6">
+    {% csrf_token %}
+    {{ item_form.item.label_tag }} {{ item_form.item }}
+    {{ item_form.quantidade_solicitada.label_tag }} {{ item_form.quantidade_solicitada }}
+    <button type="submit" class="h-9 rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Adicionar item</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

@@ -18,14 +18,20 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
-from lab_management.views import PainelView, RegisterView
+from django.views.generic import RedirectView
+from lab_management.views import RegisterView
 
 urlpatterns = [
     path("api/v1/auth/", include("accounts.urls")),
     path("api/v1/", include("inventory.urls")),
     path('admin/', admin.site.urls),
+    path("app/", include("lab_management.web_urls")),
     path('', TemplateView.as_view(template_name='index.html'), name='index'),
-    path('painel/', PainelView.as_view(), name='painel'),
+    path(
+        "painel/",
+        RedirectView.as_view(pattern_name="app:dashboard", permanent=False),
+        name="painel",
+    ),
     path('login/', auth_views.LoginView.as_view(template_name='login.html', redirect_authenticated_user=True), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='index'), name='logout'),
     path('register/', RegisterView.as_view(), name='register'),

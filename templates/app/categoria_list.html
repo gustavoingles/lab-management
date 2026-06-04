@@ -1,0 +1,17 @@
+{% extends "app/layout.html" %}
+{% block title %}Categorias — LabManager{% endblock %}
+{% block app_content %}
+<div class="mb-6 flex items-center justify-between">
+  <h2 class="text-2xl font-semibold">Categorias</h2>
+  <a href="{% url 'app:categoria_nova' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Nova</a>
+</div>
+<div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
+  <table class="w-full text-sm">
+    <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">Código</th><th class="p-3">Nome</th><th class="p-3">Ativa</th></tr></thead>
+    <tbody class="divide-y divide-border">
+      {% for c in categorias %}<tr><td class="p-3">{{ c.codigo }}</td><td class="p-3">{{ c.nome }}</td><td class="p-3">{% if c.ativa %}Sim{% else %}Não{% endif %}</td></tr>
+      {% empty %}<tr><td colspan="3" class="p-6 text-center text-muted-foreground">Nenhuma categoria.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

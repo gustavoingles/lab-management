@@ -1,0 +1,29 @@
+{% extends "app/layout.html" %}
+{% block title %}Ordens de serviço — LabManager{% endblock %}
+{% block app_content %}
+<div class="mb-6 flex justify-between">
+  <h2 class="text-2xl font-semibold">Ordens de serviço</h2>
+  <a href="{% url 'app:ordem_servico_nova' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Nova OS</a>
+</div>
+<div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
+  <table class="w-full text-sm">
+    <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">#</th><th class="p-3">Equipamento</th><th class="p-3">Status</th><th class="p-3">Ações</th></tr></thead>
+    <tbody class="divide-y divide-border">
+      {% for o in ordens %}
+      <tr>
+        <td class="p-3">{{ o.id }}</td>
+        <td class="p-3">{{ o.equipamento.numero_serie }}</td>
+        <td class="p-3">{{ o.get_status_display }}</td>
+        <td class="p-3 flex gap-2">
+          {% if o.status == "aberta" %}
+          <form method="post" action="{% url 'app:ordem_servico_iniciar' o.pk %}">{% csrf_token %}<button class="text-xs text-primary hover:underline">Iniciar</button></form>
+          {% elif o.status == "em_execucao" %}
+          <form method="post" action="{% url 'app:ordem_servico_encerrar' o.pk %}">{% csrf_token %}<button class="text-xs text-primary hover:underline">Encerrar</button></form>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}<tr><td colspan="4" class="p-6 text-center text-muted-foreground">Nenhuma OS.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

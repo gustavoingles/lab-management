@@ -28,7 +28,8 @@
         </nav>
         <div class="flex items-center gap-2">
           {% if user.is_authenticated %}
-            <span class="text-sm font-medium text-muted-foreground mr-4">Olá, {{ user.first_name|default:user.email }}</span>
+            <a href="{% url 'app:dashboard' %}" class="text-sm font-medium text-primary hover:underline mr-4">Painel</a>
+            <span class="text-sm text-muted-foreground mr-4 hidden sm:inline">Olá, {{ user.nome }}</span>
             <form action="{% url 'logout' %}" method="post" class="inline">
               {% csrf_token %}
               <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 px-3">

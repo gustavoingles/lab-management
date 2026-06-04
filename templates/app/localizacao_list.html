@@ -1,0 +1,18 @@
+{% extends "app/layout.html" %}
+{% block title %}Localizações — LabManager{% endblock %}
+{% block app_content %}
+<div class="mb-6 flex justify-between">
+  <h2 class="text-2xl font-semibold">Localizações</h2>
+  <a href="{% url 'app:localizacao_nova' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Nova</a>
+</div>
+<div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
+  <table class="w-full text-sm">
+    <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">Tipo</th><th class="p-3">Nome</th><th class="p-3">Código</th></tr></thead>
+    <tbody class="divide-y divide-border">
+      {% for l in localizacoes %}
+      <tr><td class="p-3">{{ l.get_tipo_display }}</td><td class="p-3">{{ l.nome }}</td><td class="p-3">{{ l.codigo|default:"—" }}</td></tr>
+      {% empty %}<tr><td colspan="3" class="p-6 text-center text-muted-foreground">Nenhuma localização.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

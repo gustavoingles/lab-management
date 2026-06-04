@@ -1,0 +1,29 @@
+{% extends "app/layout.html" %}
+{% block title %}Estoque — LabManager{% endblock %}
+{% block app_content %}
+<div class="mb-6 flex flex-wrap justify-between gap-4">
+  <h2 class="text-2xl font-semibold">Estoque</h2>
+  <a href="{% url 'app:movimentacao_nova' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Nova movimentação</a>
+</div>
+{% if alertas %}
+<div class="mb-6 rounded-xl border border-destructive/30 bg-destructive/10 p-4">
+  <h3 class="font-medium text-destructive">Alertas ({{ alertas|length }})</h3>
+  <ul class="mt-2 space-y-1 text-sm">
+    {% for a in alertas %}<li>{{ a.item.nome }} em {{ a.localizacao.nome }}: {{ a.quantidade_disponivel }} (alerta {{ a.nivel_alerta }})</li>{% endfor %}
+  </ul>
+</div>
+{% endif %}
+<div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
+  <table class="w-full text-sm">
+    <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">Item</th><th class="p-3">Local</th><th class="p-3">Disponível</th><th class="p-3">Alerta</th></tr></thead>
+    <tbody class="divide-y divide-border">
+      {% for e in estoques %}
+      <tr class="{% if e.abaixo_alerta %}bg-destructive/5{% endif %}">
+        <td class="p-3">{{ e.item.nome }}</td><td class="p-3">{{ e.localizacao.nome }}</td>
+        <td class="p-3">{{ e.quantidade_disponivel }}</td><td class="p-3">{{ e.nivel_alerta }}</td>
+      </tr>
+      {% empty %}<tr><td colspan="4" class="p-6 text-center text-muted-foreground">Sem saldo registrado.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

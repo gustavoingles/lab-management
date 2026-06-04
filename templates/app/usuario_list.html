@@ -1,0 +1,19 @@
+{% extends "app/layout.html" %}
+{% block title %}Usuários — LabManager{% endblock %}
+{% block app_content %}
+<h2 class="mb-6 text-2xl font-semibold">Usuários</h2>
+<p class="mb-4 text-sm text-muted-foreground">Apenas admin pode promover outro usuário a perfil admin.</p>
+<div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
+  <table class="w-full text-sm">
+    <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">Nome</th><th class="p-3">E-mail</th><th class="p-3">Perfil</th><th class="p-3"></th></tr></thead>
+    <tbody class="divide-y divide-border">
+      {% for u in usuarios %}
+      <tr>
+        <td class="p-3">{{ u.nome }}</td><td class="p-3">{{ u.email }}</td><td class="p-3">{{ u.perfil.nome }}</td>
+        <td class="p-3"><a href="{% url 'app:usuario_editar' u.pk %}" class="text-primary hover:underline">Editar</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

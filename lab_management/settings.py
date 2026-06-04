@@ -70,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'lab_management.context_processors.app_navigation',
             ],
         },
     },
@@ -126,7 +127,7 @@ STATICFILES_DIRS = [
 ]
 
 # Authentication Configuration
-LOGIN_REDIRECT_URL = 'painel'
+LOGIN_REDIRECT_URL = 'app:dashboard'
 LOGOUT_REDIRECT_URL = 'index'
 
 AUTHENTICATION_BACKENDS = [

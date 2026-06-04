@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}LabManager{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body class="min-h-screen bg-background font-sans antialiased text-foreground">
+  <div class="flex min-h-screen">
+    <aside class="hidden w-64 flex-col border-r border-border bg-card/40 lg:flex">
+      <div class="flex h-16 items-center gap-2 border-b border-border px-4">
+        <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[image:var(--gradient-hero)] text-primary-foreground">
+          <i data-lucide="flask-conical" class="h-5 w-5"></i>
+        </span>
+        <span class="font-semibold">LabManager</span>
+      </div>
+      <nav class="flex-1 space-y-1 p-3">
+        {% for item in app_nav %}
+        <a href="{% url item.url_name %}"
+           class="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+          <i data-lucide="{{ item.icon }}" class="h-4 w-4"></i>
+          {{ item.label }}
+        </a>
+        {% endfor %}
+      </nav>
+      <div class="border-t border-border p-4 text-xs text-muted-foreground">
+        <p class="font-medium text-foreground">{{ user.nome }}</p>
+        <p>{{ user.perfil.nome }}</p>
+        <form action="{% url 'logout' %}" method="post" class="mt-3">
+          {% csrf_token %}
+          <button type="submit" class="text-primary hover:underline">Sair</button>
+        </form>
+      </div>
+    </aside>
+    <div class="flex flex-1 flex-col">
+      <header class="border-b border-border px-4 py-3 lg:px-8 lg:py-0 lg:h-16 lg:flex lg:items-center lg:justify-between">
+        <nav class="flex gap-2 overflow-x-auto pb-2 text-xs lg:hidden">
+          {% for item in app_nav %}
+          <a href="{% url item.url_name %}" class="whitespace-nowrap rounded-md border border-border px-2 py-1">{{ item.label }}</a>
+          {% endfor %}
+        </nav>
+        <h1 class="hidden text-lg font-semibold lg:block">LabManager</h1>
+        <div class="ml-auto flex items-center gap-4 text-sm text-muted-foreground">
+          <span class="hidden sm:inline">{{ user.nome }} · {{ user.perfil.codigo }}</span>
+          <a href="{% url 'index' %}" class="hover:text-foreground">Site</a>
+        </div>
+      </header>
+      <main class="flex-1 p-4 lg:p-8">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="mb-4 rounded-md p-3 text-sm {% if message.tags == 'error' %}bg-destructive/15 text-destructive{% else %}bg-primary/10 text-foreground{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+        {% block app_content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>
