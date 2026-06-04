@@ -4,16 +4,24 @@ This file provides guidance to AI coding agents when working with code in this r
 
 ## Dependency Management
 
-This project uses **uv** for all dependency and environment management. Always use:
+This project uses **uv** when available. Always prefer:
 
 ```bash
 uv add <package>          # install and track a new dependency
 uv run python manage.py   # run any Django management command
-uv run django-admin       # run django-admin commands
 uv sync                   # install all dependencies from lockfile
 ```
 
-Never use `pip install` directly — it bypasses `pyproject.toml` and `uv.lock`.
+If `uv` is not installed, use a virtualenv:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+python manage.py <command>
+```
+
+Never use bare `pip install <package>` without updating `pyproject.toml`.
 
 ## Common Commands
 
@@ -25,14 +33,15 @@ uv run python manage.py runserver
 uv run python manage.py makemigrations
 uv run python manage.py migrate
 
-# Create superuser
-uv run python manage.py createsuperuser
+# Reset DB schema (empty DB only, DEBUG=True)
+uv run python manage.py reset_schema
+
+# Create admin user (custom user model + perfil)
+uv run python manage.py bootstrap_admin --email admin@lab.test --nome Admin --password 'secret'
 
 # Run tests
 uv run python manage.py test
-
-# Run a single test
-uv run python manage.py test <app_label>.tests.<TestClass>.<test_method>
+uv run python manage.py test accounts.tests.AuthAPITestCase
 
 # Open Django shell
 uv run python manage.py shell
@@ -40,20 +49,40 @@ uv run python manage.py shell
 
 ## Environment Variables
 
-Create a `.env` file at the project root (next to `manage.py`) before running anything. Required variables:
+Create a `.env` file at the project root (next to `manage.py`):
 
 ```env
 SECRET_KEY=your-secret-key-here
 DEBUG=True
-DATABASE_URL=postgres://user:password@localhost:5432/lab_management
+DATABASE_URL=postgres://admin:123456@localhost:5432/banco-lab
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 ```
 
-`settings.py` uses `django-environ` to read these. `DATABASE_URL` drives the database backend — PostgreSQL is the target database.
+`settings.py` uses `django-environ`. `DATABASE_URL` drives the PostgreSQL backend.
 
 ## Architecture
 
-- `lab_management/` — Django project config package (`settings.py`, `urls.py`, `wsgi.py`, `asgi.py`)
+- `lab_management/` — project config (`settings.py`, `urls.py`, `forms.py`, `views.py`, `auth_backends.py`)
+- `accounts/` — custom user (`Usuario`), profiles (`Perfil`), REST auth API, management commands
 - `manage.py` — Django CLI entry point
-- `pyproject.toml` — single source of truth for dependencies and project metadata
+- `pyproject.toml` / `uv.lock` — Python dependencies
+- `database/postgresql_schema.sql` — domain DDL reference (not used for auth tables)
+- `docs/modelagem-postgresql.md` — domain modeling notes
 
-The uv project root and Django project root are the same directory (`.` was used with `startproject`). New Django apps go at the root level alongside `manage.py` and are registered in `INSTALLED_APPS`.
+New Django apps go at the repository root next to `manage.py` and are registered in `INSTALLED_APPS`.
+
+## Authentication
+
+- `AUTH_USER_MODEL = "accounts.Usuario"` — login field is `email`
+- Web: templates under `templates/`, `EmailBackend` in `lab_management.auth_backends`
+- API: DRF + SimpleJWT under `/api/v1/auth/` (register, token, refresh, me)
+- Default profile on self-registration: `solicitante` (seeded in migration `0002_seed_perfis`)
+- Do not register users against `inventory.Usuarios` (`managed=False` inspectdb legacy)
+
+## Testing
+
+Follow TDD when adding features. Auth tests live in `accounts.tests`. Run:
+
+```bash
+uv run python manage.py test accounts
+```
