@@ -1,4 +1,5 @@
 from accounts.permissions import (
+    PERFIL_ALMOXARIFE,
     PERFIS_GESTAO,
     PERFIS_ESTOQUE,
     PERFIS_SOLICITACAO,
@@ -22,27 +23,48 @@ def app_navigation(request):
     if usuario_tem_perfil(user, *PERFIS_ESTOQUE):
         nav.extend(
             [
+                {"label": "Localizações", "url_name": "app:localizacoes", "icon": "map-pin"},
+                {"label": "Unidades", "url_name": "app:unidades_medida", "icon": "ruler"},
+                {"label": "Lotes", "url_name": "app:lotes", "icon": "package"},
                 {"label": "Estoque", "url_name": "app:estoques", "icon": "warehouse"},
                 {
                     "label": "Movimentações",
                     "url_name": "app:movimentacao_nova",
                     "icon": "arrow-left-right",
                 },
+                {"label": "Inventários", "url_name": "app:inventarios", "icon": "clipboard-check"},
             ]
         )
 
+    if usuario_tem_perfil(user, *PERFIS_GESTAO, PERFIL_ALMOXARIFE):
+        nav.append({"label": "Baixas", "url_name": "app:baixas", "icon": "trash-2"})
+
     if usuario_tem_perfil(user, *PERFIS_ESTOQUE, *PERFIS_SOLICITACAO):
-        nav.append(
-            {"label": "Requisições", "url_name": "app:requisicoes", "icon": "clipboard-list"}
+        nav.extend(
+            [
+                {
+                    "label": "Requisições",
+                    "url_name": "app:requisicoes",
+                    "icon": "clipboard-list",
+                },
+                {
+                    "label": "Reservas",
+                    "url_name": "app:reservas_equipamento",
+                    "icon": "calendar",
+                },
+            ]
         )
 
     if usuario_tem_perfil(user, *PERFIS_GESTAO, *PERFIS_MANUTENCAO):
-        nav.append(
-            {
-                "label": "Ordens de serviço",
-                "url_name": "app:ordens_servico",
-                "icon": "wrench",
-            }
+        nav.extend(
+            [
+                {
+                    "label": "Ordens de serviço",
+                    "url_name": "app:ordens_servico",
+                    "icon": "wrench",
+                },
+                {"label": "Manutenções", "url_name": "app:manutencoes", "icon": "settings"},
+            ]
         )
 
     if usuario_tem_perfil(user, *PERFIS_GESTAO, "auditor", "fiscal"):

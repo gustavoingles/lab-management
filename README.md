@@ -10,7 +10,8 @@ Sistema para controle de estoque e manutenção de equipamentos de laboratório 
 | Autorização por perfil | Leitura/escrita por papel nas APIs de domínio |
 | Catálogo (Sem. 4) | Categorias, unidades, localizações, itens, equipamentos |
 | Estoque (Sem. 5–6) | Estoques, lotes, movimentações, alertas de nível |
-| Requisições (Sem. 7) | CRUD, aprovar, rejeitar, atender itens |
+| Requisições (Sem. 7) | CRUD, aprovar (reserva estoque), rejeitar, atender itens |
+| Reservas de equipamento | Agenda com aprovação do gestor e bloqueio de conflito |
 | Ordens de serviço (Sem. 8–10) | OS, manutenções, iniciar/encerrar, status do equipamento |
 | Inventário e baixas (Sem. 11–12) | CRUD + auditoria consultável |
 | Interface web (templates) | Dashboard, CRUD e fluxos em `/app/` (mesmo CSS do site) |
