@@ -41,8 +41,8 @@ Cada perfil vê apenas o que pode fazer. Na apresentação, use **três contas**
 
 | Perfil | Papel na demo | Itens principais do menu |
 |--------|----------------|---------------------------|
-| **Solicitante** | Pesquisador / aluno | Início, Catálogo (leitura), Requisições, Reservas, Meu perfil |
-| **Almoxarife** | Estoque físico | Tudo do solicitante + Localizações, Unidades, Lotes, Estoque, Movimentações, Inventários, Baixas |
+| **Solicitante** | Pesquisador / aluno | Início, Catálogo (leitura), **Equipamentos** (consulta), Requisições, Reservas, Meu perfil |
+| **Almoxarife** | Estoque físico | Tudo do solicitante + Localizações, Unidades, Lotes, Estoque, Movimentações, Inventários, Baixas; cadastra equipamentos pelo menu **Equipamentos** |
 | **Gestor** | Coordenador do lab | Quase tudo + aprovar requisições/reservas, Usuários, Solicitações de perfil, Auditoria, OS |
 | **Admin** | TI / responsável máximo | Igual gestor + pode promover outros a **admin** |
 | **Técnico de manutenção** | Manutenção | OS, Manutenções, Catálogo (leitura) |
@@ -179,7 +179,7 @@ Três papéis (três navegadores ou troca de login).
 
 | Passo | Quem | Tela | Pré-requisito |
 |-------|------|------|----------------|
-| D1 | Almoxarife | `/app/equipamentos/novo/` | Item com tipo **equipamento** |
+| D1 | Almoxarife | Menu **Equipamentos** → **Novo equipamento** (ou **Catálogo** → item tipo equipamento → **Equipamentos** → **Novo**) | Item com tipo **equipamento** |
 | D2 | Solicitante | `/app/reservas-equipamento/nova/` | Equipamento existente |
 | D3 | Solicitante | Lista reservas | Status **Pendente** |
 | D4 | Gestor | Lista | **Confirmar** |
@@ -262,11 +262,13 @@ Três papéis (três navegadores ou troca de login).
 | **Necessário para** | **Reservas de equipamento**, **Ordens de serviço**, Baixa (equipamento) |
 | **Campos chave** | número de série, tombamento, status operacional |
 
-**Fluxo correto para chegar em Reservas:**
+**Fluxo correto para chegar em Reservas (só por cliques no painel):**
 
-1. Criar **Item** “Microscópio” (tipo equipamento).
-2. Criar **Equipamento** vinculado a esse item.
-3. Ir em **Reservas** → Nova reserva → escolher equipamento.
+1. Menu **Catálogo** → **Novo item** → tipo **Equipamento** (ex.: “Microscópio”).
+2. Menu **Equipamentos** → **Novo equipamento** → escolher o item e informar número de série.
+3. Menu **Reservas** → **Nova reserva** → escolher equipamento.
+
+Atalhos: na lista de itens (filtro equipamento) e no **Início** há links para **Equipamentos**; após salvar item/equipamento, mensagens levam ao próximo passo.
 
 ---
 
