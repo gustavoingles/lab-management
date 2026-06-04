@@ -88,6 +88,11 @@ class CanManageUsers(permissions.BasePermission):
         return usuario_tem_perfil(request.user, *PERFIS_GESTAO)
 
 
+class CanManageReservaEquipamento(PerfilPermission):
+    read_perfis = PERFIS_LEITURA_AMPLA
+    write_perfis = PERFIS_SOLICITACAO | PERFIS_ESTOQUE
+
+
 class CanViewAuditoria(PerfilPermission):
     read_perfis = PERFIS_GESTAO | {PERFIL_AUDITOR, PERFIL_FISCAL}
     write_perfis = set()  # auditoria só via serviço interno

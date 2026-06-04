@@ -19,6 +19,7 @@ router.register("manutencoes", views.ManutencaoViewSet)
 router.register("inventarios", views.InventarioViewSet)
 router.register("inventario-itens", views.InventarioItemViewSet)
 router.register("baixas", views.BaixaViewSet)
+router.register("reservas-equipamento", views.ReservaEquipamentoViewSet)
 router.register("auditorias", views.AuditoriaViewSet)
 
 urlpatterns = [

@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 
 from inventory.models import (
@@ -19,6 +20,7 @@ from inventory.models import (
     OrdemServico,
     Requisicao,
     RequisicaoItem,
+    ReservaEquipamento,
     UnidadeMedida,
 )
 
@@ -59,6 +61,10 @@ class EquipamentoSerializer(serializers.ModelSerializer):
 
 class EstoqueSerializer(serializers.ModelSerializer):
     abaixo_alerta = serializers.BooleanField(read_only=True)
+    saldo_livre = serializers.SerializerMethodField()
+
+    def get_saldo_livre(self, obj):
+        return obj.saldo_livre
     item_nome = serializers.CharField(source="item.nome", read_only=True)
     localizacao_nome = serializers.CharField(source="localizacao.nome", read_only=True)
 
@@ -75,6 +81,9 @@ class LoteSerializer(serializers.ModelSerializer):
 
 class RequisicaoItemSerializer(serializers.ModelSerializer):
     item_nome = serializers.CharField(source="item.nome", read_only=True)
+    localizacao_reserva_nome = serializers.CharField(
+        source="localizacao_reserva.nome", read_only=True, default=None
+    )
 
     class Meta:
         model = RequisicaoItem
@@ -179,6 +188,36 @@ class AtenderRequisicaoItemSerializer(serializers.Serializer):
 class EncerrarOrdemServicoSerializer(serializers.Serializer):
     laudo_emitido = serializers.BooleanField(default=False)
     status_equipamento = serializers.CharField(required=False)
+
+
+class ReservaEquipamentoSerializer(serializers.ModelSerializer):
+    equipamento_serie = serializers.CharField(
+        source="equipamento.numero_serie", read_only=True
+    )
+    solicitante_nome = serializers.CharField(source="solicitante.nome", read_only=True)
+
+    class Meta:
+        model = ReservaEquipamento
+        fields = "__all__"
+        read_only_fields = ("solicitante", "aprovador", "criada_em", "atualizada_em")
+
+    def create(self, validated_data):
+        from inventory.services.reservas_equipamento import criar_reserva_equipamento
+
+        equipamento = validated_data.pop("equipamento")
+        try:
+            return criar_reserva_equipamento(
+                solicitante=self.context["request"].user,
+                equipamento_id=equipamento.pk,
+                finalidade=validated_data["finalidade"],
+                inicio=validated_data["inicio"],
+                fim=validated_data["fim"],
+                observacao=validated_data.get("observacao", ""),
+            )
+        except DjangoValidationError as exc:
+            if hasattr(exc, "message_dict") and exc.message_dict:
+                raise serializers.ValidationError(exc.message_dict) from exc
+            raise serializers.ValidationError(list(exc.messages)) from exc
 
 
 class AuditoriaSerializer(serializers.ModelSerializer):

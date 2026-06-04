@@ -12,6 +12,7 @@ from accounts.permissions import (
     CanManageInventario,
     CanManageOrdensServico,
     CanManageRequisicoes,
+    CanManageReservaEquipamento,
     CanManageStock,
     CanViewAuditoria,
 )
@@ -31,6 +32,7 @@ from inventory.models import (
     OrdemServico,
     Requisicao,
     RequisicaoItem,
+    ReservaEquipamento,
     UnidadeMedida,
 )
 from inventory.serializers import (
@@ -53,6 +55,7 @@ from inventory.serializers import (
     RequisicaoItemCreateSerializer,
     RequisicaoItemSerializer,
     RequisicaoSerializer,
+    ReservaEquipamentoSerializer,
     UnidadeMedidaSerializer,
 )
 from inventory.services import (
@@ -63,6 +66,11 @@ from inventory.services import (
     registrar_auditoria,
     registrar_movimentacao,
     rejeitar_requisicao,
+)
+from inventory.services.reservas_equipamento import (
+    aprovar_reserva_equipamento,
+    cancelar_reserva_equipamento,
+    encerrar_reserva_equipamento,
 )
 
 
@@ -325,6 +333,58 @@ class BaixaViewSet(AuditMixin, viewsets.ModelViewSet):
     queryset = Baixa.objects.select_related("item", "equipamento", "usuario")
     serializer_class = BaixaSerializer
     permission_classes = [IsAuthenticated, CanManageBaixas]
+
+
+class ReservaEquipamentoViewSet(viewsets.ModelViewSet):
+    queryset = ReservaEquipamento.objects.select_related(
+        "equipamento", "solicitante", "aprovador"
+    )
+    serializer_class = ReservaEquipamentoSerializer
+    permission_classes = [IsAuthenticated, CanManageReservaEquipamento]
+    http_method_names = ["get", "post", "head", "options"]
+
+    def get_queryset(self):
+        from accounts.permissions import PERFIS_GESTAO, usuario_tem_perfil
+
+        qs = super().get_queryset()
+        if usuario_tem_perfil(self.request.user, *PERFIS_GESTAO):
+            return qs
+        return qs.filter(solicitante=self.request.user)
+
+    @action(
+        detail=True,
+        methods=["post"],
+        permission_classes=[IsAuthenticated, CanApproveRequisicoes],
+    )
+    def aprovar(self, request, pk=None):
+        reserva = self.get_object()
+        try:
+            aprovar_reserva_equipamento(revisor=request.user, reserva=reserva)
+        except DjangoValidationError as exc:
+            raise ValidationError(exc.messages) from exc
+        return Response(ReservaEquipamentoSerializer(reserva).data)
+
+    @action(detail=True, methods=["post"])
+    def cancelar(self, request, pk=None):
+        reserva = self.get_object()
+        try:
+            cancelar_reserva_equipamento(usuario=request.user, reserva=reserva)
+        except DjangoValidationError as exc:
+            raise ValidationError(exc.messages) from exc
+        return Response(ReservaEquipamentoSerializer(reserva).data)
+
+    @action(
+        detail=True,
+        methods=["post"],
+        permission_classes=[IsAuthenticated, CanApproveRequisicoes],
+    )
+    def encerrar(self, request, pk=None):
+        reserva = self.get_object()
+        try:
+            encerrar_reserva_equipamento(reserva=reserva)
+        except DjangoValidationError as exc:
+            raise ValidationError(exc.messages) from exc
+        return Response(ReservaEquipamentoSerializer(reserva).data)
 
 
 class AuditoriaViewSet(viewsets.ReadOnlyModelViewSet):
