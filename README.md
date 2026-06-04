@@ -6,14 +6,17 @@ Sistema para controle de estoque e manutenção de equipamentos de laboratório 
 
 | Módulo | Status |
 |--------|--------|
-| Autenticação (web + JWT) | Cadastro, login, perfil `/me`, painel `/painel/` |
+| Autenticação (web + JWT) | Cadastro, login, app `/app/`, API `/api/v1/auth/` |
 | Autorização por perfil | Leitura/escrita por papel nas APIs de domínio |
 | Catálogo (Sem. 4) | Categorias, unidades, localizações, itens, equipamentos |
 | Estoque (Sem. 5–6) | Estoques, lotes, movimentações, alertas de nível |
 | Requisições (Sem. 7) | CRUD, aprovar, rejeitar, atender itens |
 | Ordens de serviço (Sem. 8–10) | OS, manutenções, iniciar/encerrar, status do equipamento |
 | Inventário e baixas (Sem. 11–12) | CRUD + auditoria consultável |
-| Front Next.js (Sem. 3) | Planejado — consumir `/api/v1/` |
+| Interface web (templates) | Dashboard, CRUD e fluxos em `/app/` (mesmo CSS do site) |
+| Front Next.js (Sem. 3) | Opcional — API já disponível |
+
+**Documentação completa da API:** [docs/guia-backend-api.md](docs/guia-backend-api.md) (passo a passo, todos os endpoints, perfis e exemplos).
 
 Referências: [database/postgresql_schema.sql](database/postgresql_schema.sql), [docs/modelagem-postgresql.md](docs/modelagem-postgresql.md), [.github/copilot-instructions.md](.github/copilot-instructions.md).
 
@@ -32,6 +35,16 @@ python manage.py bootstrap_admin --email admin@lab.test --nome Admin --password 
 python manage.py runserver
 ```
 
+## Interface web (`/app/`)
+
+Depois do login você entra em **`http://127.0.0.1:8000/app/`** — menu lateral, tabelas e formulários no mesmo estilo da landing (Tailwind).
+
+- **Solicitante:** requisições, consulta de itens/estoque  
+- **Almoxarife:** catálogo, movimentações, atender requisições  
+- **Gestor/Admin:** aprovar requisições, usuários, auditoria  
+
+Recompilar estilos após editar templates: `npm install && npm run build:css`
+
 ## API
 
 ### Auth — `/api/v1/auth/`
@@ -42,6 +55,8 @@ python manage.py runserver
 | POST | `token/` | Login JWT (`email`, `password`) |
 | POST | `token/refresh/` | Renovar token |
 | GET | `me/` | Usuário autenticado |
+| GET | `perfis/` | Lista perfis (admin, gestor) |
+| GET/PATCH | `usuarios/`, `usuarios/{id}/` | Gestão de usuários e perfis (admin, gestor) |
 
 ### Domínio — `/api/v1/` (header `Authorization: Bearer <token>`)
 

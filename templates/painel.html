@@ -10,9 +10,17 @@
       Perfil: <strong>{{ user.perfil.nome }}</strong> ({{ user.perfil.codigo }})
     </p>
     <p class="mt-6 text-sm text-muted-foreground">
-      Use a API REST em <code class="rounded bg-muted px-1">/api/v1/</code> com JWT
-      (<code class="rounded bg-muted px-1">POST /api/v1/auth/token/</code>).
+      Documentação completa:
+      <code class="rounded bg-muted px-1">docs/guia-backend-api.md</code> no repositório
+      (endpoints, perfis e exemplos).
     </p>
+    {% if user.perfil.codigo == "admin" or user.perfil.codigo == "gestor" %}
+    <p class="mt-2 text-sm text-muted-foreground">
+      Você pode alterar perfis de usuários via
+      <code class="rounded bg-muted px-1">PATCH /api/v1/auth/usuarios/{id}/</code>
+      (apenas admin promove a admin).
+    </p>
+    {% endif %}
     <ul class="mt-8 list-disc space-y-2 pl-6 text-sm text-foreground">
       <li>Catálogo: categorias, itens, equipamentos, localizações</li>
       <li>Estoque: estoques, lotes, movimentações, alertas em <code>/api/v1/estoques/alertas/</code></li>
