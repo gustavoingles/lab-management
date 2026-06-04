@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.utils.safestring import mark_safe
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
@@ -21,7 +22,7 @@ from accounts.permissions import (
     PERFIS_SOLICITACAO,
     usuario_tem_perfil,
 )
-from inventory.choices import StatusOrdemServico, StatusRequisicao
+from inventory.choices import StatusOrdemServico, StatusRequisicao, TipoItem
 from inventory.models import (
     Auditoria,
     Categoria,
@@ -73,6 +74,14 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         ctx["os_abertas"] = OrdemServico.objects.filter(
             status__in=[StatusOrdemServico.ABERTA, StatusOrdemServico.EM_EXECUCAO]
         ).count()
+        user = self.request.user
+        ctx["pode_estoque"] = user.is_superuser or usuario_tem_perfil(
+            user, *PERFIS_ESTOQUE
+        )
+        ctx["pode_reserva"] = user.is_superuser or usuario_tem_perfil(
+            user, *PERFIS_ESTOQUE, *PERFIS_SOLICITACAO
+        )
+        ctx["total_equipamentos"] = Equipamento.objects.count()
         return ctx
 
 
@@ -95,6 +104,7 @@ class CategoriaCreateView(PerfilRequiredMixin, CreateView):
         ctx = super().get_context_data(**kwargs)
         ctx["page_title"] = "Nova categoria"
         ctx["cancel_url"] = reverse("app:categorias")
+        ctx["intro_template"] = "app/intros/forms/categoria.html"
         return ctx
 
 
@@ -123,7 +133,23 @@ class ItemCreateView(PerfilRequiredMixin, CreateView):
         ctx = super().get_context_data(**kwargs)
         ctx["page_title"] = "Novo item"
         ctx["cancel_url"] = reverse("app:itens")
+        ctx["intro_template"] = "app/intros/forms/item.html"
         return ctx
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        if form.instance.tipo_item == TipoItem.EQUIPAMENTO:
+            url = reverse("app:equipamento_novo")
+            messages.success(
+                self.request,
+                mark_safe(
+                    f'Item salvo. <a href="{url}" class="underline">Cadastre o equipamento físico</a> '
+                    "(número de série) para liberar reservas."
+                ),
+            )
+        else:
+            messages.success(self.request, "Item salvo.")
+        return response
 
 
 class EquipamentoListView(PerfilRequiredMixin, PodeEscreverMixin, ListView):
@@ -135,6 +161,13 @@ class EquipamentoListView(PerfilRequiredMixin, PodeEscreverMixin, ListView):
 
     def get_queryset(self):
         return Equipamento.objects.select_related("item").order_by("-updated_at")
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["itens_equipamento"] = Item.objects.filter(
+            tipo_item=TipoItem.EQUIPAMENTO, ativo=True
+        ).exists()
+        return ctx
 
 
 class EquipamentoCreateView(PerfilRequiredMixin, CreateView):
@@ -148,7 +181,28 @@ class EquipamentoCreateView(PerfilRequiredMixin, CreateView):
         ctx = super().get_context_data(**kwargs)
         ctx["page_title"] = "Novo equipamento"
         ctx["cancel_url"] = reverse("app:equipamentos")
+        ctx["intro_template"] = "app/intros/forms/equipamento.html"
+        ctx["itens_equipamento"] = Item.objects.filter(
+            tipo_item=TipoItem.EQUIPAMENTO, ativo=True
+        ).exists()
+        if not ctx["itens_equipamento"]:
+            ctx["form_alert"] = mark_safe(
+                'Antes de salvar, crie um <a href="'
+                + reverse("app:item_novo")
+                + '" class="underline">item do catálogo</a> com tipo <strong>Equipamento</strong>.'
+            )
         return ctx
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(
+            self.request,
+            mark_safe(
+                f'Equipamento cadastrado. '
+                f'<a href="{reverse("app:reservas_equipamento")}" class="underline">Ir para reservas</a>.'
+            ),
+        )
+        return response
 
 
 class LocalizacaoListView(PerfilRequiredMixin, PodeEscreverMixin, ListView):
@@ -170,6 +224,7 @@ class LocalizacaoCreateView(PerfilRequiredMixin, CreateView):
         ctx = super().get_context_data(**kwargs)
         ctx["page_title"] = "Nova localização"
         ctx["cancel_url"] = reverse("app:localizacoes")
+        ctx["intro_template"] = "app/intros/forms/localizacao.html"
         return ctx
 
 
@@ -201,6 +256,7 @@ class MovimentacaoCreateView(PerfilRequiredMixin, FormView):
         ctx = super().get_context_data(**kwargs)
         ctx["page_title"] = "Registrar movimentação"
         ctx["cancel_url"] = reverse("app:estoques")
+        ctx["intro_template"] = "app/intros/forms/movimentacao.html"
         return ctx
 
     def form_valid(self, form):
@@ -274,6 +330,7 @@ class RequisicaoCreateView(PerfilRequiredMixin, CreateView):
         ctx = super().get_context_data(**kwargs)
         ctx["page_title"] = "Nova requisição"
         ctx["cancel_url"] = reverse("app:requisicoes")
+        ctx["intro_template"] = "app/intros/forms/requisicao.html"
         return ctx
 
 
@@ -387,6 +444,7 @@ class OrdemServicoCreateView(PerfilRequiredMixin, CreateView):
         ctx = super().get_context_data(**kwargs)
         ctx["page_title"] = "Nova ordem de serviço"
         ctx["cancel_url"] = reverse("app:ordens_servico")
+        ctx["intro_template"] = "app/intros/forms/ordem_servico.html"
         return ctx
 
 
@@ -454,6 +512,7 @@ class UsuarioUpdateView(PerfilRequiredMixin, UpdateView):
         ctx = super().get_context_data(**kwargs)
         ctx["page_title"] = f"Editar {self.object.nome}"
         ctx["cancel_url"] = reverse("app:usuarios")
+        ctx["intro_template"] = "app/intros/forms/usuario.html"
         return ctx
 
     def form_valid(self, form):

@@ -18,7 +18,12 @@ def app_navigation(request):
     if usuario_tem_perfil(
         user, *PERFIS_ESTOQUE, *PERFIS_SOLICITACAO, *PERFIS_MANUTENCAO, "auditor", "fiscal"
     ):
-        nav.append({"label": "Catálogo", "url_name": "app:itens", "icon": "boxes"})
+        nav.extend(
+            [
+                {"label": "Catálogo", "url_name": "app:itens", "icon": "boxes"},
+                {"label": "Equipamentos", "url_name": "app:equipamentos", "icon": "cpu"},
+            ]
+        )
 
     if usuario_tem_perfil(user, *PERFIS_ESTOQUE):
         nav.extend(

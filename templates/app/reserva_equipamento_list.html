@@ -5,9 +5,21 @@
   <h2 class="text-2xl font-semibold">Reservas de equipamento</h2>
   <a href="{% url 'app:reserva_equipamento_nova' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Nova reserva</a>
 </div>
-<p class="mb-4 text-sm text-muted-foreground">
-  Solicite um horário para uso de equipamento. O gestor confirma a reserva; conflitos de agenda são bloqueados.
-</p>
+{% include "app/_page_intro.html" with intro_template="app/intros/reservas_equipamento.html" %}
+{% if total_equipamentos == 0 %}
+<div class="mb-4 rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-sm">
+  Nenhum equipamento cadastrado — a lista de reserva ficará vazia.
+  {% if pode_escrever %}
+  <span class="mt-1 block">
+    <a href="{% url 'app:equipamentos' %}" class="text-primary hover:underline">Equipamentos</a> →
+    <a href="{% url 'app:item_novo' %}" class="text-primary hover:underline">novo item</a> (tipo equipamento) →
+    <a href="{% url 'app:equipamento_novo' %}" class="text-primary hover:underline">novo equipamento</a>
+  </span>
+  {% else %}
+  <span class="mt-1 block">Consulte <a href="{% url 'app:equipamentos' %}" class="text-primary hover:underline">Equipamentos</a> ou peça ao almoxarife.</span>
+  {% endif %}
+</div>
+{% endif %}
 <div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
   <table class="w-full text-sm">
     <thead class="border-b border-border bg-muted/50 text-muted-foreground">

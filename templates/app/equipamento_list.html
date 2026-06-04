@@ -1,10 +1,23 @@
 {% extends "app/layout.html" %}
 {% block title %}Equipamentos — LabManager{% endblock %}
 {% block app_content %}
-<div class="mb-6 flex justify-between">
+<div class="mb-6 flex flex-wrap items-center justify-between gap-4">
   <h2 class="text-2xl font-semibold">Equipamentos</h2>
-  {% if pode_escrever %}<a href="{% url 'app:equipamento_novo' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Novo</a>{% endif %}
+  <div class="flex flex-wrap gap-2">
+    <a href="{% url 'app:itens' %}?tipo=equipamento" class="inline-flex h-9 items-center rounded-md border border-input px-3 text-sm">Itens (tipo equipamento)</a>
+    {% if pode_escrever %}
+    <a href="{% url 'app:item_novo' %}" class="inline-flex h-9 items-center rounded-md border border-input px-3 text-sm">Novo item</a>
+    <a href="{% url 'app:equipamento_novo' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Novo equipamento</a>
+    {% endif %}
+  </div>
 </div>
+{% include "app/_page_intro.html" with intro_template="app/intros/equipamentos.html" %}
+{% if pode_escrever and not itens_equipamento %}
+<div class="mb-4 rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-sm">
+  Nenhum item do tipo equipamento no catálogo.
+  <a href="{% url 'app:item_novo' %}" class="font-medium text-primary hover:underline">Criar item</a> antes de cadastrar o equipamento.
+</div>
+{% endif %}
 <div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
   <table class="w-full text-sm">
     <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">Série</th><th class="p-3">Item</th><th class="p-3">Status</th>{% if pode_escrever %}<th class="p-3">Ações</th>{% endif %}</tr></thead>
@@ -14,7 +27,20 @@
         <td class="p-3">{{ e.numero_serie }}</td><td class="p-3">{{ e.item.nome }}</td><td class="p-3">{{ e.get_status_operacional_display }}</td>
         {% if pode_escrever %}{% include "app/_acoes.html" with edit_url_name="app:equipamento_editar" delete_url_name="app:equipamento_excluir" object_pk=e.pk %}{% endif %}
       </tr>
-      {% empty %}<tr><td colspan="{% if pode_escrever %}4{% else %}3{% endif %}" class="p-6 text-center text-muted-foreground">Nenhum equipamento.</td></tr>{% endfor %}
+      {% empty %}
+      <tr>
+        <td colspan="{% if pode_escrever %}4{% else %}3{% endif %}" class="p-6 text-center text-muted-foreground">
+          Nenhum equipamento cadastrado.
+          {% if pode_escrever %}
+          <span class="mt-2 block">
+            <a href="{% url 'app:item_novo' %}" class="text-primary hover:underline">1. Criar item</a>
+            (tipo equipamento) →
+            <a href="{% url 'app:equipamento_novo' %}" class="text-primary hover:underline">2. Novo equipamento</a>
+          </span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
     </tbody>
   </table>
 </div>
