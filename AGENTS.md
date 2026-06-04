@@ -63,10 +63,11 @@ CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 ## Architecture
 
 - `lab_management/` — project config (`settings.py`, `urls.py`, `forms.py`, `views.py`, `auth_backends.py`)
-- `accounts/` — custom user (`Usuario`), profiles (`Perfil`), REST auth API, management commands
+- `accounts/` — custom user (`Usuario`), profiles (`Perfil`), permissions (`permissions.py`), REST auth API
+- `inventory/` — domain models, services (estoque, requisições, OS, auditoria), REST viewsets under `/api/v1/`
 - `manage.py` — Django CLI entry point
 - `pyproject.toml` / `uv.lock` — Python dependencies
-- `database/postgresql_schema.sql` — domain DDL reference (not used for auth tables)
+- `database/postgresql_schema.sql` — domain DDL reference (Django migrations are source of truth at runtime)
 - `docs/modelagem-postgresql.md` — domain modeling notes
 
 New Django apps go at the repository root next to `manage.py` and are registered in `INSTALLED_APPS`.
@@ -77,7 +78,9 @@ New Django apps go at the repository root next to `manage.py` and are registered
 - Web: templates under `templates/`, `EmailBackend` in `lab_management.auth_backends`
 - API: DRF + SimpleJWT under `/api/v1/auth/` (register, token, refresh, me)
 - Default profile on self-registration: `solicitante` (seeded in migration `0002_seed_perfis`)
-- Do not register users against `inventory.Usuarios` (`managed=False` inspectdb legacy)
+- Domain tables live in `inventory` models with FK to `AUTH_USER_MODEL`
+- Use `inventory.services` for stock movements and workflow actions (approve requisition, close work order)
+- Permission classes: `accounts.permissions` (`CanManageCatalog`, `CanManageStock`, etc.)
 
 ## Testing
 
