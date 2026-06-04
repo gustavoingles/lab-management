@@ -81,6 +81,13 @@ class CanManageBaixas(PerfilPermission):
     write_perfis = PERFIS_GESTAO | {PERFIL_ALMOXARIFE}
 
 
+class CanManageUsers(permissions.BasePermission):
+    """Lista e edita usuários (admin e gestor). Atribuir perfil admin só para admin."""
+
+    def has_permission(self, request, view):
+        return usuario_tem_perfil(request.user, *PERFIS_GESTAO)
+
+
 class CanViewAuditoria(PerfilPermission):
     read_perfis = PERFIS_GESTAO | {PERFIL_AUDITOR, PERFIL_FISCAL}
     write_perfis = set()  # auditoria só via serviço interno

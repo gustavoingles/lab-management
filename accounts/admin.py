@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from accounts.models import Perfil, Usuario
+from accounts.models import Perfil, SolicitacaoAlteracaoPerfil, Usuario
 
 
 @admin.register(Perfil)
@@ -53,3 +53,18 @@ class UsuarioAdmin(UserAdmin):
         ),
     )
     filter_horizontal = ("groups", "user_permissions")
+
+
+@admin.register(SolicitacaoAlteracaoPerfil)
+class SolicitacaoAlteracaoPerfilAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "solicitante",
+        "perfil_atual",
+        "perfil_solicitado",
+        "status",
+        "criada_em",
+    )
+    list_filter = ("status",)
+    search_fields = ("solicitante__email", "solicitante__nome")
+    readonly_fields = ("criada_em", "revisada_em")
