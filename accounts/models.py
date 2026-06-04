@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -46,3 +47,59 @@ class Usuario(AbstractUser):
 
     def __str__(self):
         return self.nome
+
+
+class StatusSolicitacaoPerfil(models.TextChoices):
+    PENDENTE = "pendente", "Pendente"
+    APROVADA = "aprovada", "Aprovada"
+    REJEITADA = "rejeitada", "Rejeitada"
+    CANCELADA = "cancelada", "Cancelada"
+
+
+class SolicitacaoAlteracaoPerfil(models.Model):
+    solicitante = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="solicitacoes_alteracao_perfil",
+    )
+    perfil_atual = models.ForeignKey(
+        Perfil,
+        on_delete=models.PROTECT,
+        related_name="solicitacoes_perfil_origem",
+    )
+    perfil_solicitado = models.ForeignKey(
+        Perfil,
+        on_delete=models.PROTECT,
+        related_name="solicitacoes_perfil_destino",
+    )
+    justificativa = models.TextField()
+    status = models.CharField(
+        max_length=20,
+        choices=StatusSolicitacaoPerfil.choices,
+        default=StatusSolicitacaoPerfil.PENDENTE,
+    )
+    revisado_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="solicitacoes_perfil_revisadas",
+    )
+    resposta_revisao = models.TextField(blank=True)
+    criada_em = models.DateTimeField(auto_now_add=True)
+    revisada_em = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "solicitação de alteração de perfil"
+        verbose_name_plural = "solicitações de alteração de perfil"
+        ordering = ["-criada_em"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["solicitante"],
+                condition=models.Q(status="pendente"),
+                name="uniq_solicitacao_perfil_pendente_por_usuario",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.solicitante.email} → {self.perfil_solicitado.codigo} ({self.status})"
