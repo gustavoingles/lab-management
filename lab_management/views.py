@@ -1,15 +1,26 @@
+from urllib.parse import urlencode
+
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import CreateView
-from django.urls import reverse_lazy
-from django.contrib.auth import login
-from .forms import CustomUserCreationForm
+
+from lab_management.forms import CustomUserCreationForm
+
+User = get_user_model()
+
 
 class RegisterView(CreateView):
-    template_name = 'register.html'
+    model = User
+    template_name = "register.html"
     form_class = CustomUserCreationForm
-    success_url = reverse_lazy('index')
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        # Logar o usuário automaticamente após o cadastro
-        login(self.request, self.object, backend='lab_management.auth_backends.EmailBackend')
-        return response
+        self.object = form.save()
+        messages.success(
+            self.request,
+            "Conta criada com sucesso. Entre com seu e-mail e senha.",
+        )
+        query = urlencode({"email": self.object.email})
+        return redirect(f"{reverse('login')}?{query}")

@@ -40,7 +40,15 @@
             <h1 class="text-2xl font-semibold tracking-tight text-foreground">{% block auth_title %}Título{% endblock %}</h1>
             <p class="text-sm text-muted-foreground">{% block auth_subtitle %}Subtítulo{% endblock %}</p>
           </div>
-          
+
+          {% if messages %}
+            {% for message in messages %}
+              <div class="mb-4 rounded-md p-3 text-sm font-medium {% if message.tags == 'error' %}bg-destructive/15 text-destructive{% else %}bg-primary/10 text-foreground{% endif %}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+
           {% block auth_content %}
           {% endblock %}
           
