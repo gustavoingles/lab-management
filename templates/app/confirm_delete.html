@@ -1,0 +1,17 @@
+{% extends "app/layout.html" %}
+{% block title %}{{ page_title }} — LabManager{% endblock %}
+{% block app_content %}
+<div class="mx-auto max-w-lg">
+  <h2 class="mb-4 text-2xl font-semibold">{{ page_title }}</h2>
+  <p class="mb-6 text-sm text-muted-foreground">
+    Tem certeza que deseja excluir <strong>{{ object }}</strong>? Esta ação não pode ser desfeita.
+  </p>
+  <form method="post" class="flex gap-3">
+    {% csrf_token %}
+    <button type="submit" class="inline-flex h-9 items-center rounded-md bg-destructive px-4 text-sm text-destructive-foreground hover:opacity-90">
+      Excluir
+    </button>
+    <a href="{{ cancel_url }}" class="inline-flex h-9 items-center rounded-md border border-input px-4 text-sm hover:bg-accent">Cancelar</a>
+  </form>
+</div>
+{% endblock %}
