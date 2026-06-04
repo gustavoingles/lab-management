@@ -1,0 +1,35 @@
+{% extends "app/layout.html" %}
+{% block title %}OS #{{ ordem.id }} — LabManager{% endblock %}
+{% block app_content %}
+<div class="mb-6">
+  <a href="{% url 'app:ordens_servico' %}" class="text-sm text-primary hover:underline">← Ordens de serviço</a>
+  <h2 class="mt-2 text-2xl font-semibold">Ordem de serviço #{{ ordem.id }}</h2>
+  <p class="text-sm text-muted-foreground">Equipamento: {{ ordem.equipamento.numero_serie }} · {{ ordem.get_status_display }}</p>
+</div>
+<div class="mb-6 rounded-xl border border-border bg-card p-5 text-sm shadow-[var(--shadow-card)]">
+  <p><strong>Problema:</strong> {{ ordem.descricao_problema }}</p>
+  {% if ordem.descricao_servico %}<p class="mt-2"><strong>Serviço:</strong> {{ ordem.descricao_servico }}</p>{% endif %}
+  <p class="mt-2 text-muted-foreground">Prioridade: {{ ordem.get_prioridade_display }}</p>
+</div>
+<div class="mb-4 flex justify-between">
+  <h3 class="text-lg font-medium">Manutenções</h3>
+  {% if pode_manutencao %}
+  <a href="{% url 'app:ordem_servico_manutencao_nova' ordem.pk %}" class="inline-flex h-8 items-center rounded-md border border-input px-3 text-xs">Registrar manutenção</a>
+  {% endif %}
+</div>
+<div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
+  <table class="w-full text-sm">
+    <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">Tipo</th><th class="p-3">Realizada</th><th class="p-3">Próx. venc.</th>{% if pode_manutencao %}<th class="p-3">Ações</th>{% endif %}</tr></thead>
+    <tbody class="divide-y divide-border">
+      {% for m in manutencoes %}
+      <tr>
+        <td class="p-3">{{ m.get_tipo_manutencao_display }}</td>
+        <td class="p-3">{% if m.realizada_em %}{{ m.realizada_em|date:"d/m/Y H:i" }}{% else %}—{% endif %}</td>
+        <td class="p-3">{% if m.proximo_vencimento %}{{ m.proximo_vencimento|date:"d/m/Y" }}{% else %}—{% endif %}</td>
+        {% if pode_manutencao %}{% include "app/_acoes.html" with edit_url_name="app:manutencao_editar" delete_url_name="app:manutencao_excluir" object_pk=m.pk %}{% endif %}
+      </tr>
+      {% empty %}<tr><td colspan="{% if pode_manutencao %}4{% else %}3{% endif %}" class="p-6 text-center text-muted-foreground">Nenhuma manutenção registrada.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

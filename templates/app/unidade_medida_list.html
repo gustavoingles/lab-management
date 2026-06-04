@@ -1,0 +1,21 @@
+{% extends "app/layout.html" %}
+{% block title %}Unidades de medida — LabManager{% endblock %}
+{% block app_content %}
+<div class="mb-6 flex justify-between">
+  <h2 class="text-2xl font-semibold">Unidades de medida</h2>
+  {% if pode_escrever %}<a href="{% url 'app:unidade_medida_nova' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Nova</a>{% endif %}
+</div>
+<div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
+  <table class="w-full text-sm">
+    <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">Nome</th><th class="p-3">Sigla</th><th class="p-3">Fracionável</th>{% if pode_escrever %}<th class="p-3">Ações</th>{% endif %}</tr></thead>
+    <tbody class="divide-y divide-border">
+      {% for u in unidades %}
+      <tr>
+        <td class="p-3">{{ u.nome }}</td><td class="p-3">{{ u.sigla }}</td><td class="p-3">{% if u.permite_fracionamento %}Sim{% else %}Não{% endif %}</td>
+        {% if pode_escrever %}{% include "app/_acoes.html" with edit_url_name="app:unidade_medida_editar" delete_url_name="app:unidade_medida_excluir" object_pk=u.pk %}{% endif %}
+      </tr>
+      {% empty %}<tr><td colspan="{% if pode_escrever %}4{% else %}3{% endif %}" class="p-6 text-center text-muted-foreground">Nenhuma unidade.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "app/layout.html" %}
+{% block title %}Lotes — LabManager{% endblock %}
+{% block app_content %}
+<div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+  <h2 class="text-2xl font-semibold">Lotes</h2>
+  {% if pode_escrever %}<a href="{% url 'app:lote_novo' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Novo lote</a>{% endif %}
+</div>
+<form method="get" class="mb-4 flex gap-2">
+  <select name="item" class="h-9 min-w-[200px] rounded-md border border-input px-3 text-sm" onchange="this.form.submit()">
+    <option value="">Todos os itens</option>
+    {% for i in itens %}<option value="{{ i.pk }}" {% if item_filtro == i.pk|stringformat:"s" %}selected{% endif %}>{{ i.nome }}</option>{% endfor %}
+  </select>
+</form>
+<div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
+  <table class="w-full text-sm">
+    <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">Item</th><th class="p-3">Lote</th><th class="p-3">Validade</th><th class="p-3">Qtd</th>{% if pode_escrever %}<th class="p-3">Ações</th>{% endif %}</tr></thead>
+    <tbody class="divide-y divide-border">
+      {% for l in lotes %}
+      <tr>
+        <td class="p-3">{{ l.item.nome }}</td><td class="p-3 font-mono text-xs">{{ l.codigo_lote }}</td>
+        <td class="p-3">{% if l.data_validade %}{{ l.data_validade|date:"d/m/Y" }}{% else %}—{% endif %}</td>
+        <td class="p-3">{{ l.quantidade_disponivel }}</td>
+        {% if pode_escrever %}{% include "app/_acoes.html" with edit_url_name="app:lote_editar" delete_url_name="app:lote_excluir" object_pk=l.pk %}{% endif %}
+      </tr>
+      {% empty %}<tr><td colspan="{% if pode_escrever %}5{% else %}4{% endif %}" class="p-6 text-center text-muted-foreground">Nenhum lote.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

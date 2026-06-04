@@ -3,7 +3,7 @@
 {% block app_content %}
 <div class="mb-6 flex justify-between">
   <h2 class="text-2xl font-semibold">Ordens de serviço</h2>
-  <a href="{% url 'app:ordem_servico_nova' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Nova OS</a>
+  {% if pode_escrever %}<a href="{% url 'app:ordem_servico_nova' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Nova OS</a>{% endif %}
 </div>
 <div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
   <table class="w-full text-sm">
@@ -14,11 +14,12 @@
         <td class="p-3">{{ o.id }}</td>
         <td class="p-3">{{ o.equipamento.numero_serie }}</td>
         <td class="p-3">{{ o.get_status_display }}</td>
-        <td class="p-3 flex gap-2">
-          {% if o.status == "aberta" %}
-          <form method="post" action="{% url 'app:ordem_servico_iniciar' o.pk %}">{% csrf_token %}<button class="text-xs text-primary hover:underline">Iniciar</button></form>
-          {% elif o.status == "em_execucao" %}
-          <form method="post" action="{% url 'app:ordem_servico_encerrar' o.pk %}">{% csrf_token %}<button class="text-xs text-primary hover:underline">Encerrar</button></form>
+        <td class="p-3 flex flex-wrap gap-2">
+          <a href="{% url 'app:ordem_servico_detalhe' o.pk %}" class="text-xs text-primary hover:underline">Detalhe</a>
+          {% if pode_escrever and o.status == "aberta" %}
+          <form method="post" action="{% url 'app:ordem_servico_iniciar' o.pk %}" class="inline">{% csrf_token %}<button type="submit" class="text-xs text-primary hover:underline">Iniciar</button></form>
+          {% elif pode_escrever and o.status == "em_execucao" %}
+          <form method="post" action="{% url 'app:ordem_servico_encerrar' o.pk %}" class="inline">{% csrf_token %}<button type="submit" class="text-xs text-primary hover:underline">Encerrar</button></form>
           {% endif %}
         </td>
       </tr>

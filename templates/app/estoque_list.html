@@ -15,14 +15,18 @@
 {% endif %}
 <div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
   <table class="w-full text-sm">
-    <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">Item</th><th class="p-3">Local</th><th class="p-3">Disponível</th><th class="p-3">Alerta</th></tr></thead>
+    <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">Item</th><th class="p-3">Local</th><th class="p-3">Total</th><th class="p-3">Reservado</th><th class="p-3">Livre</th><th class="p-3">Alerta</th>{% if pode_escrever %}<th class="p-3">Ações</th>{% endif %}</tr></thead>
     <tbody class="divide-y divide-border">
       {% for e in estoques %}
       <tr class="{% if e.abaixo_alerta %}bg-destructive/5{% endif %}">
         <td class="p-3">{{ e.item.nome }}</td><td class="p-3">{{ e.localizacao.nome }}</td>
-        <td class="p-3">{{ e.quantidade_disponivel }}</td><td class="p-3">{{ e.nivel_alerta }}</td>
+        <td class="p-3">{{ e.quantidade_disponivel }}</td>
+        <td class="p-3">{{ e.quantidade_reservada }}</td>
+        <td class="p-3 font-medium">{{ e.saldo_livre }}</td>
+        <td class="p-3">{{ e.nivel_alerta }}</td>
+        {% if pode_escrever %}<td class="p-3"><a href="{% url 'app:estoque_editar' e.pk %}" class="text-xs text-primary hover:underline">Níveis</a></td>{% endif %}
       </tr>
-      {% empty %}<tr><td colspan="4" class="p-6 text-center text-muted-foreground">Sem saldo registrado.</td></tr>{% endfor %}
+      {% empty %}<tr><td colspan="{% if pode_escrever %}7{% else %}6{% endif %}" class="p-6 text-center text-muted-foreground">Sem saldo registrado.</td></tr>{% endfor %}
     </tbody>
   </table>
 </div>

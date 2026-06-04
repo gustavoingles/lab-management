@@ -1,0 +1,24 @@
+{% extends "app/layout.html" %}
+{% block title %}Manutenções — LabManager{% endblock %}
+{% block app_content %}
+<div class="mb-6 flex justify-between">
+  <h2 class="text-2xl font-semibold">Manutenções</h2>
+  {% if pode_escrever %}<a href="{% url 'app:manutencao_nova' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Nova</a>{% endif %}
+</div>
+<div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
+  <table class="w-full text-sm">
+    <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">OS</th><th class="p-3">Equipamento</th><th class="p-3">Tipo</th><th class="p-3">Próx. venc.</th>{% if pode_escrever %}<th class="p-3">Ações</th>{% endif %}</tr></thead>
+    <tbody class="divide-y divide-border">
+      {% for m in manutencoes %}
+      <tr>
+        <td class="p-3"><a href="{% url 'app:ordem_servico_detalhe' m.ordem_servico_id %}" class="text-primary hover:underline">#{{ m.ordem_servico_id }}</a></td>
+        <td class="p-3">{{ m.ordem_servico.equipamento.numero_serie }}</td>
+        <td class="p-3">{{ m.get_tipo_manutencao_display }}</td>
+        <td class="p-3">{% if m.proximo_vencimento %}{{ m.proximo_vencimento|date:"d/m/Y" }}{% else %}—{% endif %}</td>
+        {% if pode_escrever %}{% include "app/_acoes.html" with edit_url_name="app:manutencao_editar" delete_url_name="app:manutencao_excluir" object_pk=m.pk %}{% endif %}
+      </tr>
+      {% empty %}<tr><td colspan="{% if pode_escrever %}5{% else %}4{% endif %}" class="p-6 text-center text-muted-foreground">Nenhuma manutenção.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

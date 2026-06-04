@@ -6,11 +6,14 @@
   <h2 class="mt-2 text-2xl font-semibold">Requisição #{{ requisicao.id }}</h2>
   <p class="text-muted-foreground">{{ requisicao.get_status_display }} · {{ requisicao.solicitante.nome }}</p>
   <p class="mt-2 text-sm">{{ requisicao.finalidade }}</p>
+  {% if requisicao.status == "aprovada" %}
+  <p class="mt-2 text-sm text-muted-foreground">Itens aprovados têm estoque <strong>reservado</strong> até o atendimento.</p>
+  {% endif %}
 </div>
 {% if pode_aprovar %}
   {% if requisicao.status == "aberta" or requisicao.status == "em_aprovacao" %}
 <div class="mb-6 flex gap-2">
-  <form method="post" action="{% url 'app:requisicao_aprovar' requisicao.pk %}">{% csrf_token %}<button class="h-9 rounded-md bg-primary px-4 text-sm text-primary-foreground">Aprovar</button></form>
+  <form method="post" action="{% url 'app:requisicao_aprovar' requisicao.pk %}">{% csrf_token %}<button class="h-9 rounded-md bg-primary px-4 text-sm text-primary-foreground">Aprovar e reservar estoque</button></form>
   <form method="post" action="{% url 'app:requisicao_rejeitar' requisicao.pk %}" class="flex gap-2">{% csrf_token %}
     <input name="motivo" placeholder="Motivo rejeição" class="h-9 rounded-md border border-input px-3 text-sm">
     <button class="h-9 rounded-md border border-destructive px-4 text-sm text-destructive">Rejeitar</button>
@@ -21,27 +24,34 @@
 <div class="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
   <h3 class="font-semibold">Itens</h3>
   <table class="mt-4 w-full text-sm">
-    <thead class="text-muted-foreground"><tr><th class="pb-2 text-left">Item</th><th>Solicitado</th><th>Aprovado</th><th>Atendido</th><th></th></tr></thead>
+    <thead class="text-muted-foreground"><tr><th class="pb-2 text-left">Item</th><th>Solicitado</th><th>Aprovado</th><th>Reserva</th><th>Atendido</th><th></th></tr></thead>
     <tbody>
       {% for linha in requisicao.itens.all %}
       <tr class="border-t border-border">
         <td class="py-3">{{ linha.item.nome }}</td>
         <td>{{ linha.quantidade_solicitada }}</td>
         <td>{{ linha.quantidade_aprovada|default:"—" }}</td>
+        <td class="text-xs text-muted-foreground">
+          {% if linha.localizacao_reserva %}{{ linha.localizacao_reserva.nome }}{% elif requisicao.status == "aprovada" and not linha.quantidade_atendida %}—{% else %}—{% endif %}
+        </td>
         <td>{{ linha.quantidade_atendida|default:"—" }}</td>
         <td>
           {% if pode_atender and requisicao.status == "aprovada" and not linha.quantidade_atendida %}
-          <form method="post" action="{% url 'app:requisicao_atender_item' requisicao.pk linha.pk %}" class="flex gap-1">
+          <form method="post" action="{% url 'app:requisicao_atender_item' requisicao.pk linha.pk %}" class="flex flex-wrap gap-1">
             {% csrf_token %}
-            <select name="localizacao_origem_id" class="h-8 rounded border border-input text-xs" required>
+            <select name="localizacao_origem_id" class="h-8 max-w-[140px] rounded border border-input text-xs" required>
+              {% if linha.localizacao_reserva %}
+              <option value="{{ linha.localizacao_reserva_id }}" selected>{{ linha.localizacao_reserva.nome }} (reservado)</option>
+              {% else %}
               {% for loc in localizacoes %}<option value="{{ loc.id }}">{{ loc.nome }}</option>{% endfor %}
+              {% endif %}
             </select>
             <button class="h-8 rounded bg-primary px-2 text-xs text-primary-foreground">Atender</button>
           </form>
           {% endif %}
         </td>
       </tr>
-      {% empty %}<tr><td colspan="5" class="py-4 text-muted-foreground">Sem itens.</td></tr>{% endfor %}
+      {% empty %}<tr><td colspan="6" class="py-4 text-muted-foreground">Sem itens.</td></tr>{% endfor %}
     </tbody>
   </table>
   {% if requisicao.status != "atendida" and requisicao.status != "rejeitada" and requisicao.status != "cancelada" %}

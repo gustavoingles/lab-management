@@ -1,0 +1,32 @@
+{% extends "app/layout.html" %}
+{% block title %}Inventários — LabManager{% endblock %}
+{% block app_content %}
+<div class="mb-6 flex justify-between">
+  <h2 class="text-2xl font-semibold">Inventários</h2>
+  {% if pode_escrever %}<a href="{% url 'app:inventario_novo' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Novo</a>{% endif %}
+</div>
+<div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
+  <table class="w-full text-sm">
+    <thead class="border-b border-border bg-muted/50 text-muted-foreground"><tr><th class="p-3">Nome</th><th class="p-3">Status</th><th class="p-3">Responsável</th><th class="p-3">Início</th><th class="p-3">Ações</th></tr></thead>
+    <tbody class="divide-y divide-border">
+      {% for inv in inventarios %}
+      <tr>
+        <td class="p-3">{{ inv.nome }}</td>
+        <td class="p-3">{{ inv.get_status_display }}</td>
+        <td class="p-3">{{ inv.responsavel.nome|default:"—" }}</td>
+        <td class="p-3 text-xs">{{ inv.iniciado_em|date:"d/m/Y" }}</td>
+        <td class="p-3 whitespace-nowrap">
+          <a href="{% url 'app:inventario_detalhe' inv.pk %}" class="text-xs text-primary hover:underline">Contagem</a>
+          {% if pode_escrever %}
+          <span class="text-muted-foreground">·</span>
+          <a href="{% url 'app:inventario_editar' inv.pk %}" class="text-xs text-primary hover:underline">Editar</a>
+          <span class="text-muted-foreground">·</span>
+          <a href="{% url 'app:inventario_excluir' inv.pk %}" class="text-xs text-destructive hover:underline">Excluir</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}<tr><td colspan="5" class="p-6 text-center text-muted-foreground">Nenhum inventário.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

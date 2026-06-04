@@ -1,0 +1,39 @@
+{% extends "app/layout.html" %}
+{% block title %}Reservas de equipamento — LabManager{% endblock %}
+{% block app_content %}
+<div class="mb-6 flex justify-between">
+  <h2 class="text-2xl font-semibold">Reservas de equipamento</h2>
+  <a href="{% url 'app:reserva_equipamento_nova' %}" class="inline-flex h-9 items-center rounded-md bg-[image:var(--gradient-hero)] px-4 text-sm text-primary-foreground">Nova reserva</a>
+</div>
+<p class="mb-4 text-sm text-muted-foreground">
+  Solicite um horário para uso de equipamento. O gestor confirma a reserva; conflitos de agenda são bloqueados.
+</p>
+<div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
+  <table class="w-full text-sm">
+    <thead class="border-b border-border bg-muted/50 text-muted-foreground">
+      <tr><th class="p-3">Equipamento</th><th class="p-3">Início</th><th class="p-3">Fim</th><th class="p-3">Status</th><th class="p-3">Ações</th></tr>
+    </thead>
+    <tbody class="divide-y divide-border">
+      {% for r in reservas %}
+      <tr>
+        <td class="p-3">{{ r.equipamento.numero_serie }}</td>
+        <td class="p-3 text-xs">{{ r.inicio|date:"d/m/Y H:i" }}</td>
+        <td class="p-3 text-xs">{{ r.fim|date:"d/m/Y H:i" }}</td>
+        <td class="p-3"><span class="rounded-full bg-muted px-2 py-0.5 text-xs">{{ r.get_status_display }}</span></td>
+        <td class="p-3 flex flex-wrap gap-2">
+          {% if pode_aprovar and r.status == "pendente" %}
+          <form method="post" action="{% url 'app:reserva_equipamento_aprovar' r.pk %}" class="inline">{% csrf_token %}<button class="text-xs text-primary hover:underline">Confirmar</button></form>
+          {% endif %}
+          {% if r.status == "confirmada" and pode_aprovar %}
+          <form method="post" action="{% url 'app:reserva_equipamento_encerrar' r.pk %}" class="inline">{% csrf_token %}<button class="text-xs text-primary hover:underline">Encerrar</button></form>
+          {% endif %}
+          {% if r.status == "pendente" or r.status == "confirmada" %}
+          <form method="post" action="{% url 'app:reserva_equipamento_cancelar' r.pk %}" class="inline">{% csrf_token %}<button class="text-xs text-destructive hover:underline">Cancelar</button></form>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}<tr><td colspan="5" class="p-6 text-center text-muted-foreground">Nenhuma reserva.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
