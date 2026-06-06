@@ -12,8 +12,8 @@ Sistema para controle de estoque e manutenção de equipamentos de laboratório 
 | Estoque (Sem. 5–6) | Estoques, lotes, movimentações, alertas de nível |
 | Requisições (Sem. 7) | CRUD, aprovar (reserva estoque), rejeitar, atender itens |
 | Reservas de equipamento | Agenda com aprovação do gestor e bloqueio de conflito |
-| Ordens de serviço (Sem. 8–10) | OS, manutenções, iniciar/encerrar, status do equipamento |
-| Inventário e baixas (Sem. 11–12) | CRUD + auditoria consultável |
+| Ordens de serviço (Sem. 8–10) | OS, manutenções, iniciar/encerrar, status do equipamento, **laudo PDF** |
+| Inventário e baixas (Sem. 11–12) | CRUD + auditoria consultável + **exportação CSV** (inventário, movimentações, auditoria) |
 | Interface web (templates) | Dashboard, CRUD e fluxos em `/app/` (mesmo CSS do site) |
 | Front Next.js (Sem. 3) | Opcional — API já disponível |
 
@@ -89,5 +89,4 @@ python manage.py test accounts inventory
 ## Próximo passo (cronograma)
 
 - App **Next.js** (Sem. 3) apontando para esta API
-- Relatórios/exportação de auditoria
 - CI/CD e deploy (DevOps)
