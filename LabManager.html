@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LabManager — Protótipo de interface</title>
+
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400..800;1,400..600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind (Play CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Tokens espelham static/css/input.css (oklch). <alpha-value> habilita modificadores /opacidade.
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Public Sans"', "system-ui", "sans-serif"],
+            mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
+          },
+          colors: {
+            background: "oklch(0.99 0.005 220 / <alpha-value>)",
+            foreground: "oklch(0.2 0.04 240 / <alpha-value>)",
+            card: { DEFAULT: "oklch(1 0 0 / <alpha-value>)", foreground: "oklch(0.2 0.04 240 / <alpha-value>)" },
+            popover: { DEFAULT: "oklch(1 0 0 / <alpha-value>)", foreground: "oklch(0.2 0.04 240 / <alpha-value>)" },
+            primary: { DEFAULT: "oklch(0.55 0.13 220 / <alpha-value>)", foreground: "oklch(0.99 0.005 220 / <alpha-value>)" },
+            secondary: { DEFAULT: "oklch(0.96 0.02 210 / <alpha-value>)", foreground: "oklch(0.3 0.06 230 / <alpha-value>)" },
+            muted: { DEFAULT: "oklch(0.96 0.015 220 / <alpha-value>)", foreground: "oklch(0.5 0.03 230 / <alpha-value>)" },
+            accent: { DEFAULT: "oklch(0.92 0.06 195 / <alpha-value>)", foreground: "oklch(0.3 0.08 220 / <alpha-value>)" },
+            destructive: { DEFAULT: "oklch(0.577 0.245 27.325 / <alpha-value>)", foreground: "oklch(0.984 0.003 247.858 / <alpha-value>)" },
+            border: "oklch(0.9 0.02 220 / <alpha-value>)",
+            input: "oklch(0.92 0.02 220 / <alpha-value>)",
+            ring: "oklch(0.55 0.13 220 / <alpha-value>)",
+          },
+          borderRadius: {
+            sm: "calc(0.625rem - 4px)", md: "calc(0.625rem - 2px)",
+            lg: "0.625rem", xl: "calc(0.625rem + 4px)", "2xl": "calc(0.625rem + 8px)",
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    :root {
+      --radius: 0.625rem;
+      --gradient-hero: linear-gradient(135deg, oklch(0.55 0.13 220), oklch(0.7 0.14 195));
+      --gradient-subtle: linear-gradient(180deg, oklch(0.99 0.005 220), oklch(0.95 0.03 200));
+      --shadow-elegant: 0 16px 48px -16px oklch(0.55 0.13 220 / 0.28);
+      --shadow-card: 0 2px 12px -4px oklch(0.55 0.13 220 / 0.14);
+    }
+    html { font-family: "Public Sans", system-ui, sans-serif; }
+    body { -webkit-font-smoothing: antialiased; }
+    .font-mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-thumb { background: oklch(0.85 0.02 220); border-radius: 99px; border: 2px solid transparent; background-clip: content-box; }
+    ::-webkit-scrollbar-thumb:hover { background: oklch(0.78 0.03 220); background-clip: content-box; }
+    [data-lucide] { stroke-width: 2; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React + Babel -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- App -->
+  <script type="text/babel" src="src/data.jsx"></script>
+  <script type="text/babel" src="src/ui.jsx"></script>
+  <script type="text/babel" src="src/shell.jsx"></script>
+  <script type="text/babel" src="src/screens_core.jsx"></script>
+  <script type="text/babel" src="src/screens_catalog.jsx"></script>
+  <script type="text/babel" src="src/screens_flow.jsx"></script>
+  <script type="text/babel" src="src/app.jsx"></script>
+</body>
+</html>

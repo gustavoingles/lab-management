@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: lab_management
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d lab_management"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      SECRET_KEY: django-insecure-labmanager-dev-key-change-in-production
+      DEBUG: "True"
+      DATABASE_URL: postgres://postgres:postgres@db:5432/lab_management
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      # Named volume shadows the bind-mount for .venv so the Linux packages
+      # built during `docker build` are not overwritten by the Windows host dir
+      - venv:/app/.venv
+
+volumes:
+  pgdata:
+  venv:
