@@ -11,4 +11,5 @@ dependencies = [
     "djangorestframework>=3.16.1",
     "djangorestframework-simplejwt>=5.5.1",
     "psycopg[binary]>=3.3.3",
+    "reportlab>=4.5.1",
 ]
