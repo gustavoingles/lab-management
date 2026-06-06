@@ -1,7 +1,10 @@
 {% extends "app/layout.html" %}
 {% block title %}Auditoria — LabManager{% endblock %}
 {% block app_content %}
-<h2 class="mb-2 text-2xl font-semibold">Auditoria</h2>
+<div class="mb-2 flex items-center justify-between">
+  <h2 class="text-2xl font-semibold">Auditoria</h2>
+  <a href="{% url 'app:auditoria_exportar_csv' %}" class="inline-flex h-8 items-center rounded-md border border-input px-3 text-xs">Exportar CSV</a>
+</div>
 {% include "app/_page_intro.html" with intro_template="app/intros/auditoria.html" %}
 <div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
   <table class="w-full text-sm">

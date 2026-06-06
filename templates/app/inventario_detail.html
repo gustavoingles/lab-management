@@ -1,10 +1,13 @@
 {% extends "app/layout.html" %}
 {% block title %}{{ inventario.nome }} — LabManager{% endblock %}
 {% block app_content %}
-<div class="mb-6">
-  <a href="{% url 'app:inventarios' %}" class="text-sm text-primary hover:underline">← Inventários</a>
-  <h2 class="mt-2 text-2xl font-semibold">{{ inventario.nome }}</h2>
-  <p class="text-sm text-muted-foreground">{{ inventario.get_status_display }} · {{ inventario.descricao }}</p>
+<div class="mb-6 flex items-start justify-between">
+  <div>
+    <a href="{% url 'app:inventarios' %}" class="text-sm text-primary hover:underline">← Inventários</a>
+    <h2 class="mt-2 text-2xl font-semibold">{{ inventario.nome }}</h2>
+    <p class="text-sm text-muted-foreground">{{ inventario.get_status_display }} · {{ inventario.descricao }}</p>
+  </div>
+  <a href="{% url 'app:inventario_exportar_csv' inventario.pk %}" class="inline-flex h-8 items-center rounded-md border border-input px-3 text-xs">Exportar CSV</a>
 </div>
 {% include "app/_page_intro.html" with intro_template="app/intros/inventario_detalhe.html" %}
 {% if pode_escrever %}

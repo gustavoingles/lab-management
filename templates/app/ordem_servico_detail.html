@@ -14,9 +14,12 @@
 </div>
 <div class="mb-4 flex justify-between">
   <h3 class="text-lg font-medium">Manutenções</h3>
-  {% if pode_manutencao %}
-  <a href="{% url 'app:ordem_servico_manutencao_nova' ordem.pk %}" class="inline-flex h-8 items-center rounded-md border border-input px-3 text-xs">Registrar manutenção</a>
-  {% endif %}
+  <div class="flex gap-2">
+    <a href="{% url 'app:ordem_servico_laudo' ordem.pk %}" class="inline-flex h-8 items-center rounded-md border border-input px-3 text-xs">Baixar Laudo (PDF)</a>
+    {% if pode_manutencao %}
+    <a href="{% url 'app:ordem_servico_manutencao_nova' ordem.pk %}" class="inline-flex h-8 items-center rounded-md border border-input px-3 text-xs">Registrar manutenção</a>
+    {% endif %}
+  </div>
 </div>
 <div class="overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
   <table class="w-full text-sm">
