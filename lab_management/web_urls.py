@@ -246,6 +246,28 @@ urlpatterns = [
         web_crud.ReservaEquipamentoEncerrarView.as_view(),
         name="reserva_equipamento_encerrar",
     ),
+    # Laudo PDF
+    path(
+        "ordens-servico/<int:pk>/laudo/",
+        web_crud.OrdemServicoLaudoView.as_view(),
+        name="ordem_servico_laudo",
+    ),
+    # Exportações CSV
+    path(
+        "inventarios/<int:pk>/exportar.csv",
+        web_crud.InventarioCSVView.as_view(),
+        name="inventario_exportar_csv",
+    ),
+    path(
+        "auditoria/exportar.csv",
+        web_crud.AuditoriaCSVView.as_view(),
+        name="auditoria_exportar_csv",
+    ),
+    path(
+        "movimentacoes/exportar.csv",
+        web_crud.MovimentacaoCSVView.as_view(),
+        name="movimentacao_exportar_csv",
+    ),
     # Auditoria e usuários
     path("auditoria/", web_views.AuditoriaListView.as_view(), name="auditorias"),
     path("usuarios/", web_views.UsuarioListView.as_view(), name="usuarios"),

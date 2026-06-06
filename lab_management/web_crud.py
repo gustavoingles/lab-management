@@ -1,6 +1,9 @@
 """Views CRUD adicionais do painel /app/ (edição, exclusão e módulos da API)."""
 
+import csv
+
 from django.contrib import messages
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, View
@@ -15,6 +18,7 @@ from accounts.permissions import (
     usuario_tem_perfil,
 )
 from inventory.models import (
+    Auditoria,
     Baixa,
     Categoria,
     Equipamento,
@@ -25,10 +29,12 @@ from inventory.models import (
     Localizacao,
     Lote,
     Manutencao,
+    Movimentacao,
     OrdemServico,
     ReservaEquipamento,
     UnidadeMedida,
 )
+from inventory.services.laudos import gerar_laudo_os
 from inventory.services.reservas_equipamento import (
     aprovar_reserva_equipamento,
     cancelar_reserva_equipamento,
@@ -636,3 +642,110 @@ class ReservaEquipamentoEncerrarView(PerfilRequiredMixin, View):
         except Exception as exc:
             messages.error(request, str(exc))
         return redirect("app:reservas_equipamento")
+
+
+# --- Laudo PDF ---
+
+
+class OrdemServicoLaudoView(PerfilRequiredMixin, DetailView):
+    perfis_required = tuple(PERFIS_LEITURA_AMPLA)
+    model = OrdemServico
+
+    def get(self, request, *args, **kwargs):
+        ordem = self.get_object()
+        pdf_bytes = gerar_laudo_os(ordem)
+        response = HttpResponse(pdf_bytes, content_type="application/pdf")
+        response["Content-Disposition"] = (
+            f'attachment; filename="laudo-os-{ordem.pk}.pdf"'
+        )
+        if not ordem.laudo_emitido:
+            OrdemServico.objects.filter(pk=ordem.pk).update(laudo_emitido=True)
+        return response
+
+
+# --- Exportações CSV ---
+
+
+class InventarioCSVView(PerfilRequiredMixin, DetailView):
+    perfis_required = tuple(PERFIS_LEITURA_AMPLA)
+    model = Inventario
+
+    def get(self, request, *args, **kwargs):
+        inv = self.get_object()
+        response = HttpResponse(content_type="text/csv; charset=utf-8")
+        response["Content-Disposition"] = (
+            f'attachment; filename="inventario-{inv.pk}.csv"'
+        )
+        response.write("﻿")  # BOM for Excel
+        writer = csv.writer(response)
+        writer.writerow([
+            "Item", "Código interno", "Localização",
+            "Qtd sistema", "Qtd contada", "Diferença", "Observação",
+        ])
+        for linha in inv.itens.select_related("item", "localizacao"):
+            writer.writerow([
+                linha.item.nome,
+                linha.item.codigo_interno,
+                linha.localizacao.nome if linha.localizacao else "",
+                linha.quantidade_sistema,
+                linha.quantidade_contada,
+                linha.diferenca,
+                linha.observacao,
+            ])
+        return response
+
+
+class AuditoriaCSVView(PerfilRequiredMixin, ListView):
+    perfis_required = tuple(PERFIS_GESTAO)
+    model = Auditoria
+
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type="text/csv; charset=utf-8")
+        response["Content-Disposition"] = 'attachment; filename="auditoria.csv"'
+        response.write("﻿")
+        writer = csv.writer(response)
+        writer.writerow(["Data", "Usuário", "Ação", "Entidade", "Entidade ID", "IP"])
+        qs = Auditoria.objects.select_related("usuario").order_by("-created_at")
+        for a in qs:
+            writer.writerow([
+                a.created_at.strftime("%d/%m/%Y %H:%M"),
+                a.usuario.nome if a.usuario else "",
+                a.acao,
+                a.entidade,
+                a.entidade_id or "",
+                a.ip_origem or "",
+            ])
+        return response
+
+
+class MovimentacaoCSVView(PerfilRequiredMixin, ListView):
+    perfis_required = tuple(PERFIS_LEITURA_AMPLA)
+    model = Movimentacao
+
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type="text/csv; charset=utf-8")
+        response["Content-Disposition"] = 'attachment; filename="movimentacoes.csv"'
+        response.write("﻿")
+        writer = csv.writer(response)
+        writer.writerow([
+            "Data", "Item", "Código interno", "Tipo",
+            "Quantidade", "Saldo resultante",
+            "Origem", "Destino", "Usuário", "Motivo",
+        ])
+        qs = Movimentacao.objects.select_related(
+            "item", "usuario", "localizacao_origem", "localizacao_destino"
+        ).order_by("-created_at")
+        for m in qs:
+            writer.writerow([
+                m.created_at.strftime("%d/%m/%Y %H:%M"),
+                m.item.nome,
+                m.item.codigo_interno,
+                m.get_tipo_movimentacao_display(),
+                m.quantidade,
+                m.saldo_resultante if m.saldo_resultante is not None else "",
+                m.localizacao_origem.nome if m.localizacao_origem else "",
+                m.localizacao_destino.nome if m.localizacao_destino else "",
+                m.usuario.nome if m.usuario else "",
+                m.motivo,
+            ])
+        return response
