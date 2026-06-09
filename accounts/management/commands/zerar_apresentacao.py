@@ -34,25 +34,10 @@ class Command(BaseCommand):
             default=SENHA_DEMO,
             help=f"Senha dos usuários demo (padrão: {SENHA_DEMO}).",
         )
-        parser.add_argument(
-            "--skip-if-seeded",
-            action="store_true",
-            help="Não executa se os usuários demo já existem (idempotente para Docker).",
-        )
 
     def handle(self, *args, **options):
         if not settings.DEBUG:
             raise CommandError("Este comando só roda com DEBUG=True.")
-
-        # Idempotent mode: skip if demo users already exist
-        if options["skip_if_seeded"]:
-            demo_emails = [email for email, *_ in USUARIOS_DEMO]
-            existing = User.objects.filter(email__in=demo_emails).count()
-            if existing == len(demo_emails):
-                self.stdout.write(
-                    self.style.SUCCESS("Demo já semeado — pulando reset.")
-                )
-                return
 
         if not options["noinput"]:
             confirm = input(
@@ -97,4 +82,3 @@ class Command(BaseCommand):
             )
         )
         self.stdout.write(f"Senha de todos os usuários demo: {password}")
-

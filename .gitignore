@@ -20,6 +20,3 @@ node_modules/
 
 # Database
 db.sqlite3
-
-# Django collectstatic output
-staticfiles/
